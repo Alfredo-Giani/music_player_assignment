@@ -1,0 +1,48 @@
+/*
+ * ttplayer_exception.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TTPLAYER_EXCEPTION_H_
+#define TTPLAYER_EXCEPTION_H_
+
+#include <exception>
+using namespace std;
+
+enum ex_causes
+{
+	NO_MEM,
+	NO_FILE,
+	NO_STREAM,
+	OTHER
+};
+
+class TTPlayerException : public exception {
+public:
+
+	void TTPlayerException()
+	{
+		cause = OTHER;
+	}
+	void TTPlayerException(ex_causes cse)
+	{
+		cause = cse;
+	}
+
+	virtual const char* what() const throw()
+	{
+		char message[100];
+		int ret = sprintf(message, "Exception: %d\n",cause);
+
+		return message;
+	};
+
+
+private:
+
+	ex_causes cause;
+};
+
+#endif /* TTPLAYER_EXCEPTION_H_ */

@@ -1,0 +1,47 @@
+/*
+ * tt_player_manager.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TT_PLAYER_MANAGER_H_
+#define TT_PLAYER_MANAGER_H_
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+#include "tt_player_component.h"
+#include "tt_player_message.h"
+
+enum TTPlayerState
+{
+	IDLE,
+	START,
+	STOPPED
+};
+
+class TTPlayerManager final : public TTPlayerComponent {
+public:
+	TTPlayerManager();
+	virtual ~TTPlayerManager();
+
+
+	void startThread();
+	void stopThread();
+	void update();
+
+	// slots for GUI interface
+	void onLeftMousePressed();
+	void onLeftMouseReleased();
+
+
+
+private:
+
+	TTPlayerState state;
+};
+
+#endif /* TT_PLAYER_MANAGER_H_ */

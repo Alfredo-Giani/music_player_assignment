@@ -1,0 +1,29 @@
+/*
+ * tt_player_component.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfredo Giani for TikTok
+ *
+ *      a base class containing declarations of basic player component methods
+ */
+
+#ifndef TT_PLAYER_COMPONENT_H_
+#define TT_PLAYER_COMPONENT_H_
+
+#include "tt_player_message.h"
+
+class TTPlayerComponent; // forward declaration
+typedef TTPlayerComponent* pTTPlayerComponent; // convenience type to use pointers to components
+
+class TTPlayerComponent : public TTPlayerObject{
+public:
+	TTPlayerComponent();
+	virtual ~TTPlayerComponent();
+	TTPlayerComponent(const TTPlayerComponent &other); // copy constructor
+
+	void update();
+	virtual void receive(pTTPlayerMessage message){};
+};
+
+
+#endif /* TT_PLAYER_COMPONENT_H_ */

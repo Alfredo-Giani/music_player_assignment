@@ -1,0 +1,42 @@
+/*
+ * tt_player_cursor.h
+ *
+ *  Created on: 9 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TT_PLAYER_CURSOR_H_
+#define TT_PLAYER_CURSOR_H_
+
+#include "tt_player_component.h"
+
+
+
+class TTPlayerCursor final : public TTPlayerComponent {
+public:
+	TTPlayerCursor();
+	virtual ~TTPlayerCursor();
+	TTPlayerCursor(const TTPlayerCursor &other);
+
+	void loadWav(char* filename) throw(TTPlayerFileNotFoundException);
+
+	void play(float speed = 1.0);
+	void stop();
+	void pause();
+
+	void fastforward(float speed = 3.0);
+	void rewind(float speed = 3.0);
+
+	int getCurrentPosition(); ///< current position is returned in samples
+
+
+
+
+private:
+
+	vector<TTPlayerEffect > effects;
+	P_WAV_HANDLER wh;
+
+};
+
+#endif /* TT_PLAYER_CURSOR_H_ */

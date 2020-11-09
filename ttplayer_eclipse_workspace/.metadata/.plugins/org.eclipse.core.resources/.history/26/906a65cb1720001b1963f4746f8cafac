@@ -1,0 +1,18 @@
+/*
+ * tt_player_manager.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TT_PLAYER_MANAGER_H_
+#define TT_PLAYER_MANAGER_H_
+
+class TTPlayerManager {
+public:
+	TTPlayerManager();
+	virtual ~TTPlayerManager();
+	TTPlayerManager(const TTPlayerManager &other);
+};
+
+#endif /* TT_PLAYER_MANAGER_H_ */

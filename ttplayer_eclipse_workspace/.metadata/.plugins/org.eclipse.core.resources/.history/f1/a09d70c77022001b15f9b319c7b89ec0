@@ -1,0 +1,59 @@
+/*
+ * tt_player_cursor.h
+ *
+ *  Created on: 9 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TT_PLAYER_CURSOR_H_
+#define TT_PLAYER_CURSOR_H_
+
+#include "tt_player_component.h"
+#include "tt_player_effect.h"
+
+enum EFF_PS
+{
+	DOWNSTREAM,
+	UPSTREAM
+};
+
+class TTPlayerCursor final : public TTPlayerComponent {
+public:
+	TTPlayerCursor();
+	virtual ~TTPlayerCursor();
+	TTPlayerCursor(const TTPlayerCursor &other);
+
+	void loadWav(char* filename) throw(TTPlayerFileNotFoundException);
+
+	void play(float speed = 1.0);
+	void stop();
+	void pause();
+
+	void fastforward(float speed = 3.0);
+	void rewind(float speed = 3.0);
+
+	int getCurrentPosition(); ///< current position is returned in samples
+	float getCurrentSample(); ///< the floating point value at the current position
+	int getCurrentSampleRAW(); ///< the RAW integer (fixed point) value at the current position
+
+	void setCurrentPosition(int pos); ///< set the current position in samples
+	void setCurrentSample(float val); ///< set the current value (floating point)at the current position
+	void setCurrentSampleRAW(int raw); ///< set the RAW integer (fixed point) value at the current position
+
+
+	void addEffect(pTTPlayerEffect peff, );///< add an effect downstream
+	void removeEffect(pTTPlayerEffect peff);
+	void moveEffectEffectDownstream(pTTPlayerEffect peff);
+	void moveEffectEffectUpstream(pTTPlayerEffect peff);
+
+	void produce();///< this is the processing stub.
+
+
+private:
+
+	vector<pTTPlayerEffect> effects;
+	P_WAV_HANDLER wh;
+
+};
+
+#endif /* TT_PLAYER_CURSOR_H_ */

@@ -1,0 +1,23 @@
+/*
+ * TTPlayerException.cpp
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#include "ttplayer_exception.h"
+
+TTPlayerException::TTPlayerException() {
+	// TODO Auto-generated constructor stub
+
+}
+
+TTPlayerException::~TTPlayerException() {
+	// TODO Auto-generated destructor stub
+}
+
+TTPlayerException::TTPlayerException(const TTPlayerException &other) {
+	// TODO Auto-generated constructor stub
+
+}
+

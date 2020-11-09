@@ -1,0 +1,26 @@
+/*
+ * tt_player_manager.cpp
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#include "tt_player_manager.h"
+
+
+TTPlayerManager::TTPlayerManager()
+{
+	cursor 	  = new TTPlayerCursor();
+	stream 	  = new TTPlayerStream();
+	processor = new TTPlayerProcessor();
+
+	state = IDLE;
+}
+
+TTPlayerManager::~TTPlayerManager()
+{
+	delete(cursor);
+	delete(stream);
+	delete(processor);
+}
+

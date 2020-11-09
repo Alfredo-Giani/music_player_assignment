@@ -1,0 +1,42 @@
+/*
+ * tt_player_effect.h
+ *
+ *  Created on: 9 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TT_PLAYER_EFFECT_H_
+#define TT_PLAYER_EFFECT_H_
+
+#include "tt_player_component.h"
+
+using namespace std;
+
+class StatelessTransferFunction
+{
+public:
+
+	StatelessTransferFunction(){};
+	virtual ~StatelessTransferFunction(){};
+	StatelessTransferFunction(const StatelessTransferFunction &other){}; ///< copy constructor
+
+	virtual float getCurveValue(float x){return x;}; ///< return the output value for a given input
+	virtual int getCurveValueRAW(int x){return x;}; ///< return the output value for a given input
+};
+
+class TTPlayerEffect : public TTPlayerComponent {
+public:
+	TTPlayerEffect();
+	virtual ~TTPlayerEffect();
+
+	TTPlayerEffect(const TTPlayerEffect &other);
+
+	virtual float output(float input){return input;};
+	virtual int outputRAW(int inputRAW){return inputRAW;};
+
+	StatelessTransferFunction* statelessTransferFunction;
+};
+
+typedef TTPlayerEffect* pTTPlayerEffect;
+
+#endif /* TT_PLAYER_EFFECT_H_ */

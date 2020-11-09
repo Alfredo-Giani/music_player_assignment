@@ -1,0 +1,27 @@
+/*
+ * tt_player_effect.cpp
+ *
+ *  Created on: 9 Nov 2020
+ *      Author: alfre
+ */
+
+#include "tt_player_effect.h"
+
+
+TTPlayerEffect::TTPlayerEffect()
+:transferFunction()
+{
+
+	// TODO Auto-generated constructor stub
+
+}
+
+TTPlayerEffect::~TTPlayerEffect() {
+	// TODO Auto-generated destructor stub
+}
+
+TTPlayerEffect::TTPlayerEffect(const TTPlayerEffect &other) {
+	// TODO Auto-generated constructor stub
+
+}
+

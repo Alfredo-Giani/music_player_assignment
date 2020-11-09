@@ -1,0 +1,20 @@
+/*
+ * tt_player_effect.h
+ *
+ *  Created on: 9 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TT_PLAYER_EFFECT_H_
+#define TT_PLAYER_EFFECT_H_
+
+#include "tt_player_component.h"
+
+class TTPlayerEffect final : public TTPlayerComponent {
+public:
+	TTPlayerEffect();
+	virtual ~TTPlayerEffect();
+	TTPlayerEffect(const TTPlayerEffect &other);
+};
+
+#endif /* TT_PLAYER_EFFECT_H_ */

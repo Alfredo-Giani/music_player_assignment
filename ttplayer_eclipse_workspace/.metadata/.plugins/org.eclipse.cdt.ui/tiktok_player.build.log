@@ -1,0 +1,10 @@
+16:59:14 **** Incremental Build of configuration Debug for project tiktok_player ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\tt_player_cursor.o" "..\\src\\tt_player_cursor.cpp" 
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\tt_player_effect.o" "..\\src\\tt_player_effect.cpp" 
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\tt_player_processor.o" "..\\src\\tt_player_processor.cpp" 
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\tt_player_manager.o" "..\\src\\tt_player_manager.cpp" 
+g++ -o tiktok_player.exe "src\\tiktok_player.o" "src\\tt_player_component.o" "src\\tt_player_cursor.o" "src\\tt_player_effect.o" "src\\tt_player_exception.o" "src\\tt_player_manager.o" "src\\tt_player_message.o" "src\\tt_player_object.o" "src\\tt_player_processor.o" "src\\tt_player_stream.o" 
+
+16:59:16 Build Finished. 0 errors, 0 warnings. (took 2s.309ms)
+

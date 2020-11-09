@@ -1,0 +1,19 @@
+/*
+ * ttplayer_exception.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TTPLAYER_EXCEPTION_H_
+#define TTPLAYER_EXCEPTION_H_
+
+#include <exception>
+using namespace std;
+
+class TTPlayerException : public exception {
+public:
+	virtual const char* what() const throw();
+};
+
+#endif /* TTPLAYER_EXCEPTION_H_ */

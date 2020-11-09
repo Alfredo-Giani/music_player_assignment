@@ -1,0 +1,18 @@
+/*
+ * tt_player_data.cpp
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#include "tt_player_data.h"
+
+TTPlayerData::TTPlayerData() {
+	// TODO Auto-generated constructor stub
+
+}
+
+TTPlayerData::~TTPlayerData() {
+	// TODO Auto-generated destructor stub
+}
+

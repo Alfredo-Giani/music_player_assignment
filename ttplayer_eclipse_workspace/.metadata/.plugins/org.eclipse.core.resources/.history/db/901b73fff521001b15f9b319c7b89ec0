@@ -1,0 +1,43 @@
+/*
+ * ttplayer_exception.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TTPLAYER_EXCEPTION_H_
+#define TTPLAYER_EXCEPTION_H_
+
+#include <exception>
+#include <cstdio>
+using namespace std;
+
+enum ex_causes
+{
+	NO_MEM,
+	NO_FILE,
+	NO_STREAM,
+	OTHER
+};
+
+class TTPlayerException : public exception
+{
+public:
+	virtual char const * what() const { return ""; }
+};
+#endif /* TTPLAYER_EXCEPTION_H_ */
+
+
+class TTPlayerFileNotFoundException : public TTPlayerException
+{
+public:
+	virtual char const * what() const { return "File not found exception"; }
+};
+
+class TTPlayerProcessorMemoryAllocationException : public TTPlayerException
+{
+public:
+	virtual char const * what() const { return "Processor memory allocation exception"; }
+};
+
+

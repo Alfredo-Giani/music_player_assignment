@@ -1,0 +1,117 @@
+/*
+ * tt_player_processor.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: Alfredo Giani for TikTok
+ *
+ *  This class deals realises a memoryless transfer function.
+ *
+ *  In this specific implementation we use a integer (fixed point) look-up table LUT to yield the desired function.
+ *
+ *	the lookup table is non uniform in x to optimise bandwidth allocation i.e. the table is more densely populated where the
+ *	curve departs more from a straight line
+ *
+ *	the output values are linearly interpolated in between LUT points
+ *
+ *	The design has in mind a hardware-like implementation. The input signal is considered raw i.e. signed integer precision
+ *	e.g. signed 16 bit
+ *
+ *	in order to minimise the use of dividers, the distance between two consecutive x-points in the lookup table is a power of 2
+ *	this allows in integer precision to use the binary shift as a divider (and multiplier) where relevant in the calculations
+ *
+ *
+ */
+
+#ifndef TT_PLAYER_PROCESSOR_H_
+#define TT_PLAYER_PROCESSOR_H_
+
+#include "tt_player_globaldefs.h"
+#include "tt_player_component.h"
+#include "tt_player_effect.h"
+
+#include <iostream>
+#include <cstring>
+#include <math.h>
+
+enum CurveType
+{
+	IDENTITY,
+	LUT,
+	TANH
+};
+
+struct pipeline
+{
+	int sign;  ///< sign
+	int integ; ///< integer part
+	int fract; ///< fractional part
+
+	float normfactor;
+};
+
+
+class TangentHSoftClipper : StatelessFunction
+{
+public:
+	TangentHSoftClipper(); ///< constructor
+
+};
+
+// the class storing the LUT and providing the output value for a given input x
+class LookupTable : StatelessFunction
+{
+public:
+	LookupTable(); ///< constructor with default bitdepth and lookup table (identity)
+	LookupTable(const char* table_name); ///< constructor which loads the table from a file
+	~LookupTable(); ///< destructor
+
+	void loadTableFromFile(const char* table_name) throw(TTPlayerFileNotFoundException); ///< load a new table
+
+	int getCurveValue(int x); ///< return the output value for a given input
+	float getCurveValue(float x); ///< return the output value for a given input
+
+private:
+	int npoints; ///< number of points (addresses) in the LUT
+	int address_bitdepth; ///< bitdepth of the input values (x)
+	int value_bitdepth; ///< bitdepth of the output values (y)
+
+	int* pAddress; ///< the start points (left margin) of each segment in lookup table, defined as incremental exponents
+	int* pValue; ///< the output corresponding to each start point (left margin) of each segment in lookup table
+};
+
+
+class TTPlayerProcessor : public TTPlayerEffect
+{
+public:
+	TTPlayerProcessor();
+	virtual ~TTPlayerProcessor();
+
+	// overrides from base class TTPlayerComponent
+	virtual void update(pTTPlayerComponent caller);
+
+	virtual void receive(pTTPlayerMessage message); //
+	virtual void send(pTTPlayerMessage message);
+
+	virtual void addComponent(pTTPlayerComponent listener);
+	virtual void removeComponent(pTTPlayerComponent listener);
+
+	// processor methods
+
+	float output(float x)
+	{
+		return static_cast<float>lut->getCurveValue(x);
+	};
+
+	int outputRAW(int inputRAW)
+	{
+		return transferFunction->getCurveValue(inputRAW);
+	};
+
+
+private:
+
+	StatelessTransferFunction* transferFunction;
+
+};
+
+#endif /* TT_PLAYER_PROCESSOR_H_ */

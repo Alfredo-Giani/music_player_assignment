@@ -1,0 +1,11 @@
+#define _DEBUG_
+
+
+
+#define RAW_BITDEPTH (16)
+
+#define DEFAULT_LUT_BITDEPTH (10)
+#define DEFAULT_CURVE ATAN
+
+#define INVLN2 = (1.4426950408889634)
+

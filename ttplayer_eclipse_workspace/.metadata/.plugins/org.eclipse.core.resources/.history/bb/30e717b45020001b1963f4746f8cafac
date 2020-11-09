@@ -1,0 +1,19 @@
+/*
+ * ttplayer_exception.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TTPLAYER_EXCEPTION_H_
+#define TTPLAYER_EXCEPTION_H_
+
+#include <Exception>
+class TTPlayerException : public TTPlayerComponent {
+public:
+	TTPlayerException();
+	virtual ~TTPlayerException();
+	TTPlayerException(const TTPlayerException &other);
+};
+
+#endif /* TTPLAYER_EXCEPTION_H_ */

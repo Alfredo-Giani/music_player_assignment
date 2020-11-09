@@ -1,0 +1,56 @@
+/*
+ * tt_player_component.cpp
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfredo Giani
+ */
+
+#include "tt_player_component.h"
+
+TTPlayerComponent::TTPlayerComponent() {
+
+}
+
+TTPlayerComponent::~TTPlayerComponent() {
+	// TODO Auto-generated destructor stub
+}
+
+TTPlayerComponent::TTPlayerComponent(const TTPlayerComponent &other) {
+	// TODO Auto-generated constructor stub
+
+}
+
+
+void TTPlayerComponent::update()
+{
+	for (auto it = components.begin(); it != components.end(); it++ )
+	{
+		(*it)->update();
+	}
+}
+
+virtual void TTPlayerComponent::receive(pTTPlayerMessage message)
+{
+
+	for (auto it = components.begin(); it != components.end(); it++ )
+	{
+		(*it)->receive(message);
+	}
+}
+
+virtual void TTPlayerComponent::send(pTTPlayerMessage message)
+{
+
+}
+
+virtual void TTPlayerComponent::addComponent(pTTPlayerComponent listener)
+{
+
+}
+
+virtual void TTPlayerComponent::removeComponent(pTTPlayerComponent listener)
+{
+
+}
+
+

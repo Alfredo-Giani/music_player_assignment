@@ -1,0 +1,22 @@
+Design a set of C++ interfaces for controlling the audio transport in a DAW. Your design:
+
+1.      should be suitable for an interactive musical application,
+
+2.      should support changing the playback state, looping, and moving the position of the play head, 
+
+3.      should show how audio rendering is affected by the audio transport control,
+
+4.      should fully define types and interfaces explicitly,
+
+5.      does not need to contain full implementations - logic may be sketched with pseudocode, as long as the key parts of your intended algorithms are well described, and
+
+6.      should contain a description of the design considerations you made.
+
+Develop both the unit tests and implementation for a stateless waveshaping saturator DSP unit that is to be used as a "soft clipper". 
+Your code should be written in modern C++, and you should provide us with instructions for how to build and run your tests.
+
+The soft clipper should support two different wave shapes as modes of distortion, and these can be of your choosing. 
+If you need a specific testing framework to develop the tests, please use it, but make sure it is easy for us to build 
+and run your tests on Unix systems.
+
+ 

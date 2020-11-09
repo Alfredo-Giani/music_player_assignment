@@ -1,0 +1,14 @@
+
+#define _DEBUG_
+
+#define RAW_BITDEPTH (16)
+
+#define DEFAULT_LUT_BITDEPTH (10)
+#define DEFAULT_CURVE ATAN
+
+#define EUL (2.71828)
+#define EUL (2.71828)
+
+#define INVLN2 (1.4426950408889634)
+
+typedef TTP_INT_16 int;

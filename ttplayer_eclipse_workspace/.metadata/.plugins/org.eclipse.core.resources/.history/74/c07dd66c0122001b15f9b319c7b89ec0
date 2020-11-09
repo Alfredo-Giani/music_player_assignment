@@ -1,0 +1,60 @@
+/*
+ * tt_player_component.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfredo Giani for TikTok
+ *
+ *      a base class containing declarations of basic player component methods
+ *
+ *      a component needs a series of functionalities
+ *
+ *      	- update it's internal state and subcomponents
+ *      	- send and receive messages
+ *
+ *      	since all these functionalities might do different things in derived classes,
+ *      	we leave the methods empty.
+ */
+
+#ifndef TT_PLAYER_COMPONENT_H_
+#define TT_PLAYER_COMPONENT_H_
+
+#include "tt_player_message.h"
+#include "tt_player_exception.h"
+
+using namespace std;
+
+class TTPlayerComponent; // forward declaration
+typedef TTPlayerComponent* pTTPlayerComponent; // convenience type to use pointers to components
+
+//////////////////////////////////////////////////////////
+// \class abbabba
+//
+class TTPlayerComponent : public TTPlayerObject{
+public:
+	/**
+	 * @fn abbabba
+	 * @brief ibbibbi
+	 * @param ubbubbu
+	 * 	update function for synchronous operations.
+	 *	having an explicit caller prevents circular calls between two-way connected components
+	 */
+	TTPlayerComponent();
+	virtual ~TTPlayerComponent();
+	TTPlayerComponent(const TTPlayerComponent &other); ///< copy constructor
+	void update(pTTPlayerComponent caller);///< martucci
+
+	virtual void receive(pTTPlayerMessage message); //
+	virtual void send(pTTPlayerMessage message);
+
+	virtual void addComponent(pTTPlayerComponent listener);
+	virtual void removeComponent(pTTPlayerComponent listener);
+
+private:
+
+
+	vector< pTTPlayerComponent > components;///<
+
+};
+
+
+#endif /* TT_PLAYER_COMPONENT_H_ */

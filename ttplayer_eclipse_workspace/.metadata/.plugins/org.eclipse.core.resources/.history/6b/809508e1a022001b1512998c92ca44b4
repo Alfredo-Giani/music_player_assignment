@@ -1,0 +1,19 @@
+/*
+ * tt_player_data.h
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#ifndef TT_PLAYER_DATA_H_
+#define TT_PLAYER_DATA_H_
+
+#include "tt_player_component.h"
+
+class TTPlayerData final : public TTPlayerComponent {
+public:
+	TTPlayerData();
+	virtual ~TTPlayerData();
+};
+
+#endif /* TT_PLAYER_DATA_H_ */

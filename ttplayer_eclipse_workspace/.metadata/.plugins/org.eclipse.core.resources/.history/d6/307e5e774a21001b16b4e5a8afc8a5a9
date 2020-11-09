@@ -1,0 +1,77 @@
+/*
+ * tt_player_processor.cpp
+ *
+ *  Created on: 6 Nov 2020
+ *      Author: alfre
+ */
+
+#include "tt_player_processor.h"
+#include "tt_player_globaldefs.h"
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+LookupTable::LookupTable()
+:npoints(1 << DEFAULT_LUT_BITDEPTH)
+,address_bitdepth(8)
+,value_bitdepth(10)
+{
+	pAddress = (int* )malloc( npoints * sizeof(int) );
+	pValue = (int* )malloc( npoints * sizeof(int) );
+
+	memset(pAddress, 0, npoints);
+	memset(pValue, 0, npoints);
+}
+
+LookupTable::~LookupTable()
+{
+	free(pAddress);
+	free(pValue);
+}
+
+int LookupTable::getCurveValue(int x)
+{
+
+	x = x >> (RAW_BITDEPTH - address_bitdepth); // normalise the input from the raw bit depth to the nominal LUT input bit depth
+
+	int retval = x;
+	int acc = 0;
+
+	long weighted_sum = 0;
+
+	int x0, x1, y0, y1;
+
+	for (int i = 0; i < npoints - 1; i++ )
+	{
+
+		x0 += (1 << pAddress[i]);
+		x1 = x0 + (1 << pAddress[i+1]);
+
+		if
+		(
+			x >= x0
+			&&
+			x <  x1
+		 )
+		{
+			y0 = pValue[i];
+			y1 = pValue[i + 1];
+
+			weighted_sum = (x- x0)*(y1 - y0) + (y0 << pAddress[i+1]);
+
+			retval = static_cast<int>( weighted_sum >> pAddress[i+1]);
+		}
+	}
+
+	return retval << (RAW_BITDEPTH - value_bitdepth); // normalise the output from the nominal LUT output bit depth to the raw bit depth
+}
+
+TTPlayerProcessor::TTPlayerProcessor() {
+	// TODO Auto-generated constructor stub
+
+}
+
+TTPlayerProcessor::~TTPlayerProcessor() {
+	// TODO Auto-generated destructor stub
+}
+

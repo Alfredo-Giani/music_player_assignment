@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;tiktok_player/src/TTPlayer_stream.h&apos; to &apos;tt_player_stream.h&apos;" description="Rename resource &apos;TTPlayer_stream.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/TTPlayer_stream.h" name="tt_player_stream.h" stamp="1604937144100" updateReferences="true"/>
+</session>
