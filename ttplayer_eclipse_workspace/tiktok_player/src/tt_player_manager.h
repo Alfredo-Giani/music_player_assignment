@@ -13,6 +13,7 @@
 
 using namespace std;
 
+#include "tt_player_globaldefs.h"
 #include "tt_player_component.h"
 #include "tt_player_message.h"
 #include "tt_player_cursor.h"
@@ -35,23 +36,27 @@ public:
 	void update();
 
 	// GUI menu operation callbacks
-	void onOpenFileClicked();
+	int onNewFileRequest(char* fullpathname);
 
-	// GUI transport callbacks
-	void onPlayButtonClicked();
-	void onPauseButtonClicked();
-	void onStopButtonClicked();
+	/*
+	 * GUI transport callbacks. these functions return 1 if successful, -1 if successful
+	 * the return value could be used by a GUI building API to detect unsuccessful operations
+	 * and change the GUI state e.g. a pressed button that get released etc
+	 */
+	int onPlayButtonClicked();
+	int onPauseButtonClicked();
+	int onStopButtonClicked();
 
-	void onHomeButtonClicked();
-	void onEndButtonClicked();
+	int onHomeButtonClicked();
+	int onEndButtonClicked();
 
-	void onRewindButtonPressed();
-	void onRewindButtonReleased();
+	int onRewindButtonPressed();
+	int onRewindButtonReleased();
 
-	void onFastForwardButtonPressed();
-	void onFastForwardButtonReleased();
+	int onFastForwardButtonPressed();
+	int onFastForwardButtonReleased();
 
-	void onTimeSliderValueChanged(float value);///< react to a manual change of the transport slider
+	int onTimeSliderValueChanged(float value);///< react to a manual change of the transport slider
 
 
 	// time slider interface
@@ -59,7 +64,7 @@ public:
 	int getCurrentPlaybackPosition();///< get current play back position in milliseconds
 
 	// exit callback
-	void onExit();
+	int onExit();
 
 private:
 	TTPlayerCursor* 	cursor;

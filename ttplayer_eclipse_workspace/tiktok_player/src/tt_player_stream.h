@@ -8,6 +8,7 @@
 #ifndef TT_PLAYER_STREAM_H_
 #define TT_PLAYER_STREAM_H_
 
+#include "tt_player_globaldefs.h"
 #include "tt_player_component.h"
 
 class TTPlayerStream final : public TTPlayerComponent
@@ -16,7 +17,15 @@ public:
 	TTPlayerStream();
 	virtual ~TTPlayerStream();
 
-	P_WAV_HANDLER loadFileStream(char* filename) noexcept;
+	void loadFileStream(const char* filename) noexcept{};///< this function loads the stream and updates the wav_handler and stream parameters
+
+	int* getWavHandler(){return pWavHandler;};
+	StreamParameters getStreamParameters(){return parameters;};
+
+private:
+	int* pWavHandler;
+	StreamParameters parameters;
+	//
 };
 
 #endif /* TT_PLAYER_STREAM_H_ */

@@ -7,7 +7,9 @@
 
 #include "tt_player_stream.h"
 
-TTPlayerStream::TTPlayerStream() {
+TTPlayerStream::TTPlayerStream()
+:pWavHandler(0)
+{
 	// TODO Auto-generated constructor stub
 
 }

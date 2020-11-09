@@ -23,9 +23,10 @@ public:
 	virtual ~TTPlayerCursor();
 	TTPlayerCursor(const TTPlayerCursor &other);
 
-	void loadWav(char* filename) noexcept;
+	void setWavHandler(int* const wavhandler);
+	void setStreamParameters(const StreamParameters params);
 
-	void play(float speed = 1.0);
+	void play(float speed = 1.0){};
 	void stop();
 	void pause();
 
@@ -52,7 +53,9 @@ public:
 private:
 
 	vector<pTTPlayerEffect> effects;
-	P_WAV_HANDLER wh;
+	int* wavHandler;
+	StreamParameters streamParameters;
+
 
 };
 

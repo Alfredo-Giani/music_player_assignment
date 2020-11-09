@@ -7,8 +7,11 @@
 
 #include "tt_player_cursor.h"
 
-TTPlayerCursor::TTPlayerCursor() {
-	// TODO Auto-generated constructor stub
+TTPlayerCursor::TTPlayerCursor()
+:wavHandler(0)
+{
+	streamParameters.bitPerSample = 16;
+	streamParameters.samplingFrequency = 44000;
 
 }
 
@@ -19,5 +22,16 @@ TTPlayerCursor::~TTPlayerCursor() {
 TTPlayerCursor::TTPlayerCursor(const TTPlayerCursor &other) {
 	// TODO Auto-generated constructor stub
 
+	wavHandler = other.wavHandler;
+
+}
+
+void TTPlayerCursor::setWavHandler(int* const wavhandler)
+{
+	wavHandler = wavhandler;
+}
+void TTPlayerCursor::setStreamParameters(const StreamParameters params)
+{
+	streamParameters = params;
 }
 

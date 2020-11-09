@@ -1,4 +1,7 @@
 
+#ifndef TT_GLOBALDEFS_H_
+#define TT_GLOBALDEFS_H_
+
 #define _DEBUG_
 
 #define RAW_BITDEPTH (16)
@@ -15,4 +18,11 @@
 #include "tt_player_message.h"
 #include "tt_player_exception.h"
 
-typedef int* P_WAV_HANDLER;
+
+struct StreamParameters
+{
+	int bitPerSample;
+	float samplingFrequency;
+};
+
+#endif /* TT_GLOBALDEFS_H_ */

@@ -22,7 +22,7 @@ TTPlayerEffect::~TTPlayerEffect() {
 
 TTPlayerEffect::TTPlayerEffect(const TTPlayerEffect &other) {
 
-	pStatelessTransferFunction = new StatelessTransferFunction();//(&(other.pStatelessTransferFunction));
+	pStatelessTransferFunction = new StatelessTransferFunction(); //(&(other.pStatelessTransferFunction));
 
 }
 
