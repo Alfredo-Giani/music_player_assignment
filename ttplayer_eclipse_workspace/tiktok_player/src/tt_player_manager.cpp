@@ -24,14 +24,13 @@ TTPlayerManager::~TTPlayerManager()
 	delete(processor);
 }
 
-
 // overridden methods
 void TTPlayerManager::update()
 {
 
 }
 
-	// GUI menu operation callbacks
+// GUI menu operation callbacks
 int TTPlayerManager::onNewFileRequest(char* fullpathname)
 {
 	int retval = 1;
