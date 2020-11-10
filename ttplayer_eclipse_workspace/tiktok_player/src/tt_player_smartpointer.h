@@ -28,25 +28,28 @@ public:
   int GetCount() const {return m_RefCount;};
 };
 
-template <typename T> class TTPlayerSmartPointer
+typedef int DEREF_TYPE;
+typedef DEREF_TYPE* SP_RAW;
+
+class TTPlayerSmartPointer
 {
 private:
-	T* m_Object{ nullptr };
+	SP_RAW m_Object{ nullptr };
 	ReferenceCount* m_ReferenceCount{ nullptr };
 
 public:
 	TTPlayerSmartPointer(){};
 	//TTPlayerSmartPointer(T* object);
 
-	TTPlayerSmartPointer(T* object)
+	TTPlayerSmartPointer(SP_RAW object)
 	: m_Object{ object }
 	, m_ReferenceCount{ new ReferenceCount() }
 	{
 		m_ReferenceCount->Increment();
 
-	#ifdef _DEBUG_
+#ifdef _DEBUG_
 		cout << "Created TTPlayerSmartPointerr! Ref count is " << m_ReferenceCount->GetCount() << endl;
-	#endif
+#endif
 	};
 
 	//Destructor
@@ -55,7 +58,11 @@ public:
 		if (m_ReferenceCount)
 		{
 			int decrementedCount = m_ReferenceCount->Decrement();
+
+#ifdef _DEBUG_
 			cout << "Destroyed TTPlayerSmartPointer! Ref count is " << decrementedCount << endl;
+#endif
+
 			if (decrementedCount <= 0)
 			{
 				delete m_ReferenceCount;
@@ -66,17 +73,19 @@ public:
 		}
 	};
 	// Copy Constructor
-	TTPlayerSmartPointer(const TTPlayerSmartPointer<T>& other)
+	TTPlayerSmartPointer(const TTPlayerSmartPointer& other)
 	:m_Object{ other.m_Object }
-	, m_ReferenceCount{ other.m_ReferenceCount }
+	,m_ReferenceCount{ other.m_ReferenceCount }
 	{
 		m_ReferenceCount->Increment();
+
 	#ifdef _DEBUG_
 		cout << "Copied TTPlayerSmartPointer! Ref count is " << m_ReferenceCount->GetCount() << endl;
 	#endif
+
 	}
 	// Overloaded Assignment Operator
-	TTPlayerSmartPointer<T>& operator=(const TTPlayerSmartPointer<T>& other)
+	TTPlayerSmartPointer& operator=(const TTPlayerSmartPointer& other)
 	{
 		if (this != &other)
 		{
@@ -91,18 +100,21 @@ public:
 			m_ReferenceCount->Increment();
 		}
 
+#ifdef _DEBUG_
 		cout << "Assigning TTPlayerSmartPointer! Ref count is " << m_ReferenceCount->GetCount() << endl;
+#endif
+
 		return *this;
 	}
 
 	//Dereference operator
-	T& operator*()
+	DEREF_TYPE& operator*()
 	{
 		return *m_Object;
 	}
 
 	//Member Access operator
-	T* operator->()
+	SP_RAW operator->()
 	{
 		return m_Object;
 	}

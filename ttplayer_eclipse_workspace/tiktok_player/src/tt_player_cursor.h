@@ -8,8 +8,11 @@
 #ifndef TT_PLAYER_CURSOR_H_
 #define TT_PLAYER_CURSOR_H_
 
+#include <memory>
+
 #include "tt_player_component.h"
 #include "tt_player_effect.h"
+#include "tt_player_smartpointer.h"
 
 enum FX_PS
 {
@@ -23,15 +26,21 @@ public:
 	virtual ~TTPlayerCursor();
 	TTPlayerCursor(const TTPlayerCursor &other);
 
-	void setWavHandler(int* const wavhandler);
+	void setWavHandler(TTPlayerSmartPointer wavhandler);
 	void setStreamParameters(const StreamParameters params);
 
 	void play(float speed = 1.0){};
 	void stop();
 	void pause();
 
-	void fastforward(float speed = 3.0);
-	void rewind(float speed = 3.0);
+	void fastforward(float speed = 3.0)
+	{
+		play(speed);
+	}
+	void rewind(float speed = 3.0)
+	{
+		play(-speed);
+	}
 
 	int getCurrentPosition(); ///< current position is returned in samples
 	float getCurrentSample(); ///< the floating point value at the current position
@@ -42,18 +51,42 @@ public:
 	void setCurrentSampleRAW(int raw); ///< set the RAW integer (fixed point) value at the current position
 
 
-	void addEffect(pTTPlayerEffect peff, FX_PS pos = UPSTREAM);///< add an effect downstream
-	void removeEffect(pTTPlayerEffect peff);
-	void moveEffectEffectDownstream(pTTPlayerEffect peff);
-	void moveEffectEffectUpstream(pTTPlayerEffect peff);
+	void addEffect(std::shared_ptr<TTPlayerEffect> peff, FX_PS pos = UPSTREAM)///< add a new effect in the specified position
+	{
+		effects.push_back(peff);///< add an effect downstream
+	};
+	void removeEffect(std::shared_ptr<TTPlayerEffect> peff);
+	void moveEffectEffectDownstream(std::shared_ptr<TTPlayerEffect> peff);
+	void moveEffectEffectUpstream(std::shared_ptr<TTPlayerEffect> peff);
 
-	void produce();///< this is the processing stub.
+	float produce()
+	{
+		int currsamp = getCurrentSample();///< this is the processing stub.
 
+		for (auto it = effects.begin(); it != effects.end() ; it++ )
+		{
+			currsamp = (*it)->output(currsamp);
+		}
+
+		return currsamp;
+	};
+
+	int produceRAW()
+	{
+		int currsamp = getCurrentSampleRAW();///< this is the processing stub.
+
+		for (auto it = effects.begin(); it != effects.end() ; it++ )
+		{
+			currsamp = (*it)->outputRAW(currsamp);
+		}
+
+		return currsamp;
+	};
 
 private:
 
-	vector<pTTPlayerEffect> effects;
-	int* wavHandler;
+	vector<std::shared_ptr<TTPlayerEffect>> effects;
+	TTPlayerSmartPointer wavHandler;
 	StreamParameters streamParameters;
 
 

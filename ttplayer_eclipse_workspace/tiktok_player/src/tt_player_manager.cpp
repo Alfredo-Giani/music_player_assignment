@@ -4,6 +4,8 @@
  *  Created on: 6 Nov 2020
  *      Author: alfre
  */
+
+#include <memory>
 #include "tt_player_manager.h"
 using namespace std;
 
@@ -41,6 +43,9 @@ int TTPlayerManager::onNewFileRequest(char* fullpathname)
 
 		cursor->setWavHandler(stream->getWavHandler());
 		cursor->setStreamParameters(stream->getStreamParameters());
+
+		std::shared_ptr<TTPlayerEffect> peff = std::shared_ptr<TTPlayerEffect>( new TTPlayerProcessor() );
+		cursor->addEffect(peff);
 
 	}
 	catch(TTPlayerException &ex)

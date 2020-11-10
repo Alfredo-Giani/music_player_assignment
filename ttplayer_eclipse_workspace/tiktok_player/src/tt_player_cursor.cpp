@@ -26,7 +26,7 @@ TTPlayerCursor::TTPlayerCursor(const TTPlayerCursor &other) {
 
 }
 
-void TTPlayerCursor::setWavHandler(int* const wavhandler)
+void TTPlayerCursor::setWavHandler(TTPlayerSmartPointer wavhandler)
 {
 	wavHandler = wavhandler;
 }

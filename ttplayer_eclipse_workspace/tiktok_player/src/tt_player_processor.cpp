@@ -40,7 +40,7 @@ int TangentHSoftClipper::getCurveValueRAW(int x)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 LookupTable::LookupTable()
-:npoints(1 << DEFAULT_LUT_BITDEPTH)
+:npoints(2)
 ,address_bitdepth(8)
 ,value_bitdepth(10)
 {
@@ -49,6 +49,14 @@ LookupTable::LookupTable()
 
 	memset(pAddress, 0, npoints);
 	memset(pValue, 0, npoints);
+
+	// fill with default curve: 2 points identity
+
+	pAddress[0] = 0;
+	pValue[0] = 0;
+
+	pAddress[npoints -1] = (1 << address_bitdepth) - 1;
+	pValue[npoints -1] = (1   << value_bitdepth) - 1;
 }
 
 LookupTable::~LookupTable()

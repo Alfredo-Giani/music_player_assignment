@@ -7,3 +7,8 @@
 
 #include "tt_player_processor.h"
 
+
+float errorMargin = 1/1000;
+int errorMarginRAW = 1;
+
+// GENERATE A RAMP AND TEST THE VALUES - DROP the values in a file with comparison to the expected value, error, and pass/fail

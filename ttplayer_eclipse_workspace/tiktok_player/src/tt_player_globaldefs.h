@@ -17,8 +17,8 @@
 
 #include "tt_player_message.h"
 #include "tt_player_exception.h"
-
-
+//#include "tt_player_smartpointer.h"
+//typedef TTPlayerSmartPointer<int> SP_STREAM;
 struct StreamParameters
 {
 	int bitPerSample;
