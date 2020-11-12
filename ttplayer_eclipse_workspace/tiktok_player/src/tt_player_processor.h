@@ -25,11 +25,12 @@
 #ifndef TT_PLAYER_PROCESSOR_H_
 #define TT_PLAYER_PROCESSOR_H_
 
-#include "tt_player_effect.h"
-
 #include <iostream>
 #include <cstring>
 #include <math.h>
+#include "tt_player_effect.h"
+
+#include "tt_player_precision.h"
 
 enum CurveType
 {
@@ -38,23 +39,13 @@ enum CurveType
 	TANH
 };
 
-struct pipeline
-{
-	int sign;  ///< sign
-	int integ; ///< integer part
-	int fract; ///< fractional part
-
-	float normfactor;
-};
-
-
 class TangentHSoftClipper : public StatelessTransferFunction
 {
 public:
-	TangentHSoftClipper(); ///< constructor
+	TangentHSoftClipper(); 														///< constructor
 
-	int getCurveValueRAW(int x); ///< return the output value for a given input
-	float getCurveValue(float x); ///< return the output value for a given input
+	TTP_U16 getCurveValue(TTP_U16 x, float gain = 1.0);  	///< return the output value for a given input - fixed point
+	float getCurveValue(float x); 												///< return the output value for a given input - floating point
 
 };
 
@@ -62,22 +53,22 @@ public:
 class LookupTable : public StatelessTransferFunction
 {
 public:
-	LookupTable(); ///< constructor with default bitdepth and lookup table (identity)
-	LookupTable(const char* table_name); ///< constructor which loads the table from a file
-	virtual ~LookupTable(); ///< destructor
+	LookupTable(); 														///< constructor with default bit depth and lookup table (identity)
+	LookupTable(const char* table_name); 								///< constructor which loads the table from a file
+	virtual ~LookupTable();												///< destructor
 
-	//void loadTableFromFile(const char* table_name) throw(TTPlayerFileNotFoundException); ///< load a new table
+	void loadTableFromFile(const char* table_name) noexcept; 			///< load a new table. throws TTPlayerException if file not found
 
-	int getCurveValueRAW(int x); ///< return the output value for a given input
-	float getCurveValue(float x); ///< return the output value for a given input
+	TTP_U16 getCurveValue(TTP_U16 x); 								///< return the output value for a given input
+	float getCurveValue(float x); 									///< return the output value for a given input
 
 private:
-	int npoints; ///< number of points (addresses) in the LUT
-	int address_bitdepth; ///< bitdepth of the input values (x)
-	int value_bitdepth; ///< bitdepth of the output values (y)
+	int npoints; 												///< number of points (addresses) in the LUT
+	int address_bitdepth; 										///< bit depth of the input values (x)
+	int value_bitdepth; 										///< bit depth of the output values (y)
 
-	int* pAddress; ///< the start points (left margin) of each segment in lookup table, defined as incremental exponents
-	int* pValue; ///< the output corresponding to each start point (left margin) of each segment in lookup table
+	int* pAddress; 												///< the start points (left margin) of each segment in lookup table, defined as incremental exponents
+	int* pValue; 												///< the output corresponding to each start point (left margin) of each segment in lookup table
 };
 
 

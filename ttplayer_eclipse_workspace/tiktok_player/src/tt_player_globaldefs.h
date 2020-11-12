@@ -3,6 +3,7 @@
 #define TT_GLOBALDEFS_H_
 
 #define _DEBUG_
+#define _TEST_RC_P
 
 #define RAW_BITDEPTH (16)
 

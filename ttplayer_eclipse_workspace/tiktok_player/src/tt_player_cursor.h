@@ -59,10 +59,8 @@ public:
 	void moveEffectEffectDownstream(std::shared_ptr<TTPlayerEffect> peff);
 	void moveEffectEffectUpstream(std::shared_ptr<TTPlayerEffect> peff);
 
-	float produce()
+	float produce(float currsamp)
 	{
-		int currsamp = getCurrentSample();///< this is the processing stub.
-
 		for (auto it = effects.begin(); it != effects.end() ; it++ )
 		{
 			currsamp = (*it)->output(currsamp);
@@ -71,10 +69,8 @@ public:
 		return currsamp;
 	};
 
-	int produceRAW()
+	int produceRAW(int currsamp)
 	{
-		int currsamp = getCurrentSampleRAW();///< this is the processing stub.
-
 		for (auto it = effects.begin(); it != effects.end() ; it++ )
 		{
 			currsamp = (*it)->outputRAW(currsamp);
