@@ -55,7 +55,7 @@ public:
 	{
 		bool retval = false;
 
-		// check if the input signed is compatible with the input nominal sign
+		// check if the input sign is compatible with the input nominal sign
 		if (x < 0 && p_in.is_signed)
 		{
 			printf
@@ -97,7 +97,7 @@ public:
 		}
 
 		// check if the output integer precision drops MSBs
-		float max_out = pow(2.0,p_out.fract) -1;
+		float max_out = pow(2.0,p_out.integ) -1;
 		if ( x_fixed > max_out )
 		{
 			printf

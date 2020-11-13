@@ -12,6 +12,7 @@ import numpy as np
 
 plt.close('all')
 
+
 lut_precision = 21
 lut_full = 10
 
@@ -33,8 +34,6 @@ def ttp_lut_inverse( n ):
         if r[nidx] < 0: 
             r[nidx]  = 0
         
-    print('range = ',  r)
-    
     # simulate the input range right bitshift
     n_ishift = np.floor(n * pow(2.0, -r)) 
     
@@ -119,27 +118,36 @@ def ttp_tanh( x, gain ):
 def test_inverse():
     
     #generate a unsigned range
-    #x_in = np.arange( 0, pow(2.0, 9) , 1 )
-    x_in = np.arange( 0, pow(2.0, 16) -1, 64 )
-    #print('x_in = ', x_in)
+    x_in = np.arange( 1, pow(2.0, 16) -1, 16 )
+    
+    # fixed point. x = 256 => x_norm = 1.0 , x =1 => x_norm = 1.0/256.0    
+    x_norm = x_in/pow(2.0,8) 
+    
+    
+    # fixed point     
+    y = ttp_lut_inverse(x_in) * pow(2.0, -lut_precision)# + 16) uncomment for integ representation 
+    y_approx = y * pow(2.0,8) # so that ttp_lut_inverse(1) = 1/(1/256) = 256 and ttp_lut_inverse(256) = 1, ttp_lut_inverse(512) = 2 etc
         
-    y = ttp_lut_inverse(x_in) * pow(2.0, -lut_precision)
-    
-    x_norm = x_in/pow(2.0,8)
-    y_ideal = 1./x_norm
-    
-    y_approx = pow(2.0,8)*y
+    y_ideal = 1/x_norm 
     
     plt.figure('inverse')
     plt.plot( x_norm, y_ideal,'-b') 
-    plt.plot( x_norm, y_approx,'-r')
+    plt.plot( x_norm, y_approx,':r')
+    plt.xscale('log')
+    plt.yscale('log')
     plt.show()
-       
     
-    plt.figure('diff')
+    plt.figure('diff (log2)')
+    plt.plot( x_norm, np.log2( pow(2.0,16) * np.abs(y_approx - y_ideal)),'-b') 
+    plt.xscale('log')
+    
+    plt.figure('diff (float)')
     plt.plot( x_norm, np.abs(y_approx - y_ideal),'-b') 
-    
+    plt.xscale('log')
 
+    plt.figure('diff (relative)')
+    plt.plot( x_norm, np.abs(y_approx - y_ideal)/y_ideal,'-b') 
+    plt.xscale('log')
 
 #------------------------------------------------------------------------------
 def test_tanh():
@@ -178,7 +186,6 @@ def test_tanh():
     
     return
 
-
 #-----------------------------------------------------------------------------
 
 x = np.arange(-1.0, 1.0, 0.0001)
@@ -189,7 +196,7 @@ plt.figure('reference')
 plt.plot(x, y_ideal, '-b')
 plt.plot(x, y_approx, '-r')
 
-#test_inverse()
+test_inverse()
 test_tanh()
 
 

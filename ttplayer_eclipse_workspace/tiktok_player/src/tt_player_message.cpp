@@ -7,12 +7,12 @@
 
 #include "tt_player_message.h"
 
-TTPlayerMessage::TTPlayerMessage()
-:caller(0)
-{
-	// TODO Auto-generated constructor stub
+TTPlayerMessage::TTPlayerMessage(MESSAGES message, string brief, TTPlayerObject* caller)
+	:message(message)
+	,brief(brief)
+	,caller(caller)
+	{}
 
-}
 
 TTPlayerMessage::~TTPlayerMessage() {
 	// TODO Auto-generated destructor stub

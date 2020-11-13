@@ -7,8 +7,10 @@
 
 #include "tt_player_object.h"
 
-TTPlayerObject::TTPlayerObject() {
-	// TODO Auto-generated constructor stub
+TTPlayerObject::TTPlayerObject()
+:id(0)
+,name(string())
+{
 
 }
 

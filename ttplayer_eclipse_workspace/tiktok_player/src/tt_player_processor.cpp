@@ -68,13 +68,16 @@ TTP_U16 TangentHSoftClipper::getCurveValue(TTP_U16 x, float gain)
     //multiply the inverse and the numerator
     TTP_U64 ratio = m*numerator;
 
+    // renormalised for LUT_PRECISION and add the desired fractional precision
+    TTP_U32 ratio_rn = ratio >> (LUT_PRECISION - LUT_OUT_FRACT);
+
     //multiply by x_s
-    TTP_S64 y = x_s * ratio;
+    TTP_S64 y = x_s * ratio_rn;
 
     //apply output rc
-    TTP_S16 y_rc = floor(y * pow(2.0, - LUT_PRECISION)); // TODO replace with bit shift
+    TTP_S16 y_rc = floor(y * pow(2.0, - LUT_OUT_FRACT)); // TODO replace with bit shift. how does bit shift behave with signed? can't remember...
 
-    // TO DO: CONVERT TO UNSIGNED!
+    // convert to signed
     TTP_U16 y_u = static_cast<TTP_U16>(static_cast<TTP_S32>(y_rc) + (1 << 15));
 
     return y_u;

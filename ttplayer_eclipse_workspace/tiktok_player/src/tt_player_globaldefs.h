@@ -3,7 +3,10 @@
 #define TT_GLOBALDEFS_H_
 
 #define _DEBUG_
-#define _TEST_RC_P
+#ifdef _DEBUG_
+	#define _TEST_RC_P
+//	#define _TEST_SIGNAL_
+#endif
 
 #define RAW_BITDEPTH (16)
 
@@ -16,6 +19,7 @@
 //#define _FIXED_IMP
 #define INVLN2 (1.44269)
 
+#include <iostream>
 #include "tt_player_message.h"
 #include "tt_player_exception.h"
 //#include "tt_player_smartpointer.h"

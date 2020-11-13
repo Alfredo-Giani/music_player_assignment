@@ -17,6 +17,7 @@
 
 #define LUT_PRECISION (21)
 #define LUT_FULL (10)
+#define LUT_OUT_FRACT (16)
 
 typedef short TTP_S8;
 typedef int TTP_S16;
