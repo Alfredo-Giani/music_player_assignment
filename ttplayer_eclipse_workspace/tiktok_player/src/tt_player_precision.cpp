@@ -89,8 +89,8 @@ TTP_U64 TTPlayerPrecision::ttp_lut_inverse( const TTP_U32 n )
     // 8 bit lookup table output (simulation of the values stored in a memory)
     TTP_U64 lut_output = floor(pow(2.0 , LUT_PRECISION)/n_clamp);
 
-    // rescaling for range
-    TTP_U64 lut_output_resc = lut_output * pow(2.0 , -r);
+    // rescaling for range and output fractional precision
+    TTP_U64 lut_output_resc = ( (lut_output << LUT_OUT_FRACT ) >> r );
 
     return lut_output_resc;
 }

@@ -19,19 +19,23 @@
 #define LUT_FULL (10)
 #define LUT_OUT_FRACT (16)
 
-typedef short TTP_S8;
-typedef int TTP_S16;
-typedef long TTP_S32;
-typedef long long TTP_S64;
 
-typedef unsigned short TTP_U8;
-typedef unsigned int TTP_U16;
-typedef unsigned long TTP_U32;
-typedef unsigned long long TTP_U64;
+
+typedef int8_t TTP_S8;
+typedef int16_t TTP_S16;
+typedef int32_t TTP_S32;
+typedef int64_t TTP_S64;
+
+typedef uint8_t TTP_U8;
+typedef uint16_t TTP_U16;
+typedef uint32_t TTP_U32;
+typedef uint64_t TTP_U64;
 
 // precision declarations along the pipeline (only few examples here)
 #define TANH_GAIN_INTEG (4)
 #define TANH_GAIN_FRACT (4)
+#define TANH_GAIN_FRACT_MULT ( 1 << TANH_GAIN_FRACT)
+#define TANH_GAIN_INTEG_CLIP (( 1 << TANH_GAIN_INTEG) -1)
 
 struct precision
 {

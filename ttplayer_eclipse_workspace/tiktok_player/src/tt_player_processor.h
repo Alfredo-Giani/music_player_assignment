@@ -42,9 +42,9 @@ enum CurveType
 class TangentHSoftClipper : public StatelessTransferFunction
 {
 public:
-	TangentHSoftClipper(); 														///< constructor
+	TangentHSoftClipper(){}; 														///< constructor
 
-	TTP_U16 getCurveValue(TTP_U16 x, float gain = 1.0);  	///< return the output value for a given input - fixed point
+	static TTP_U16 getCurveValue(TTP_U16 x, float gain = 1.0);  	///< return the output value for a given input - fixed point
 	float getCurveValue(float x); 												///< return the output value for a given input - floating point
 
 };

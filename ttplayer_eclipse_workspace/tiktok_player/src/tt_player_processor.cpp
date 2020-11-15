@@ -11,13 +11,8 @@
 #ifdef _TEST_RC_P
 #include "tt_player_instrumentation.h"
 #endif
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-#define TANH_UNIT_GAIN ( 1 << TANH_GAIN_FRACT) // fixed point (as integer) unitary squared gain. 4 bits of fractional precision therefore (1 << 4) = 16
-
-
-
 float TangentHSoftClipper::getCurveValue(float x)
 {
 
@@ -36,48 +31,54 @@ float TangentHSoftClipper::getCurveValue(float x)
 TTP_U16 TangentHSoftClipper::getCurveValue(TTP_U16 x, float gain)
 {
 
-	TTP_U8 int_gain = floor(gain * TANH_UNIT_GAIN); // (1 << 4) gain has precision. this could
+	//TODO way too many magic numbers
+
+	TTP_U8 int_gain = floor(gain * TANH_GAIN_FRACT_MULT); // (1 << 4) gain has precision. this could
 
 	// TODO: convert to signed
 	//calculate the square and apply round and clip point
 
 	TTP_S16 x_s = static_cast<TTP_S16>(static_cast<TTP_S32>(x) - (1 << 15));
 
+	// bypass if 0.
+	if(x_s == 0)
+		return 0;
+
 	// calculate the square
     TTP_U64 x_sq = x_s *x_s;
 
     //clamp x_sq to remove asymmetry
-    TTP_U32 x_sq_cl = CLAMP(x_sq, 0, pow(2.0,32)-1); // TODO replace with bit shift
+    TTP_U32 x_sq_cl = CLAMP(x_sq, 0, pow(2.0,32)-1); // TODO replace with bit shift TODO precalculate constants
 
     //apply squared gain
     TTP_U16 int_gain_sq = int_gain*int_gain;
-    TTP_U64 xg = x_sq_cl * int_gain_sq;
+    TTP_U64 xg = static_cast<TTP_U64>(x_sq_cl) * int_gain_sq;
 
-    //apply round and clip point
+    //apply round and clip point: remove 8 fractional bits (squared gain) and drop further 15 bits (squared input) now xg_rc has the integer bits of the gain and the fractional of the input
     TTP_U32 xg_rc = floor(xg * pow(2.0, -15 -8));
 
     // calculate (27 + xg)
-    TTP_U32 numerator = 27*pow(2.0,15) + xg_rc;
+    TTP_U32 numerator = 27*pow(2.0,15) + xg_rc; // TODO: precalculate the constants
 
     //calculate denominator (n in the doc)
-    TTP_U32 denominator = numerator + xg_rc * pow(2.0 , 3);
+    TTP_U32 denominator = numerator + xg_rc * pow(2.0 , 3); // TODO: precalculate the constants
 
     // calculate the inverse m
-	TTP_U64 m = TTPlayerPrecision::ttp_lut_inverse(denominator);
+	TTP_U64 lut_inverse = TTPlayerPrecision::ttp_lut_inverse(denominator);
 
     //multiply the inverse and the numerator
-    TTP_U64 ratio = m*numerator;
+    TTP_U64 ratio = lut_inverse*numerator;
 
-    // renormalised for LUT_PRECISION and add the desired fractional precision
-    TTP_U32 ratio_rn = ratio >> (LUT_PRECISION - LUT_OUT_FRACT);
+    // renormalised for LUT_PRECISION
+    TTP_U32 ratio_norm = ( ratio >> LUT_PRECISION );
 
     //multiply by x_s
-    TTP_S64 y = x_s * ratio_rn;
+    TTP_S64 y = x_s * static_cast<TTP_S64>(ratio_norm);
 
     //apply output rc
     TTP_S16 y_rc = floor(y * pow(2.0, - LUT_OUT_FRACT)); // TODO replace with bit shift. how does bit shift behave with signed? can't remember...
 
-    // convert to signed
+    // convert to unsigned
     TTP_U16 y_u = static_cast<TTP_U16>(static_cast<TTP_S32>(y_rc) + (1 << 15));
 
     return y_u;

@@ -19,6 +19,8 @@
 //#define _FIXED_IMP
 #define INVLN2 (1.44269)
 
+#define POW2(X) ( pow(2.0, X ) )
+
 #include <iostream>
 #include "tt_player_message.h"
 #include "tt_player_exception.h"
