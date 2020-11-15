@@ -6,7 +6,7 @@
  */
 
 #include "tt_player_precision.h"
-#ifdef _TEST_RC_P
+#ifdef _DEBUG_
 #include "tt_player_instrumentation.h"
 #endif
 
@@ -27,8 +27,10 @@ TTPlayerPrecision::TTPlayerPrecision(const TTPlayerPrecision &other) {
 }
 
 // NOTE: this code has been ported from Python so is not fully C optimised.
-TTP_U64 TTPlayerPrecision::ttp_lut_inverse( const TTP_U32 n )
+TTP_U64 TTPlayerPrecision::ttp_lut_inverse( const TTP_U32 n ) noexcept
 {
+	if(n == 0)
+		throw( TTPlayerDivisionByZeroException() );
 
     // the range of the input in nbits - 8
     TTP_U8 r = 0;
@@ -59,13 +61,7 @@ TTP_U64 TTPlayerPrecision::ttp_lut_inverse( const TTP_U32 n )
     // this clamp simulates a truncation point
     TTP_U32 n_clamp = CLAMP( n_ishift, 1, (1 << LUT_FULL) -1 );
 
-
-#ifdef _TEST_SIGNAL_
-    std::cout << "n = " << n << " n_ishift = " << n_ishift << " n_clamp = " << n_clamp << " r = " << r << "\n";
-
-#endif
-
-#ifdef _TEST_RC_P
+#ifdef _DEBUG_RC_P
 
     //printf("n = %d n_ishift = %d n_clamp = %d range = %d\n", n, n_ishift, n_clamp, r);
 

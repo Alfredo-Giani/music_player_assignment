@@ -5,12 +5,14 @@
  *      Author: alfre
  */
 #include "tt_player_processor.h"
-
+#include "tt_player_exception.h"
 // this will be defined in the unit test
 
-#ifdef _TEST_RC_P
+#ifdef _DEBUG_
 #include "tt_player_instrumentation.h"
 #endif
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 float TangentHSoftClipper::getCurveValue(float x)
@@ -42,7 +44,7 @@ TTP_U16 TangentHSoftClipper::getCurveValue(TTP_U16 x, float gain)
 
 	// bypass if 0.
 	if(x_s == 0)
-		return 0;
+		return (1 << 15);
 
 	// calculate the square
     TTP_U64 x_sq = x_s *x_s;
@@ -64,7 +66,17 @@ TTP_U16 TangentHSoftClipper::getCurveValue(TTP_U16 x, float gain)
     TTP_U32 denominator = numerator + xg_rc * pow(2.0 , 3); // TODO: precalculate the constants
 
     // calculate the inverse m
-	TTP_U64 lut_inverse = TTPlayerPrecision::ttp_lut_inverse(denominator);
+    TTP_U64 lut_inverse;
+    try
+    {
+    	lut_inverse = TTPlayerPrecision::ttp_lut_inverse(denominator);
+    }
+    catch(TTPlayerDivisionByZeroException &ex)
+    {
+    	printf("TangentHSoftClipper::getCurveValue %s\n", ex.what() );
+    	//TODO send the division by zero to the DEBUG manager
+
+    }
 
     //multiply the inverse and the numerator
     TTP_U64 ratio = lut_inverse*numerator;

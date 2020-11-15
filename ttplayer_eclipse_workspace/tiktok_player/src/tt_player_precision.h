@@ -61,7 +61,7 @@ public:
 	};
 	static void roundclip(float &x, precision p_in, precision p_out){};
 
-	static TTP_U64 ttp_lut_inverse( TTP_U32 n );
+	static TTP_U64 ttp_lut_inverse( TTP_U32 n ) noexcept;
 
 
 };

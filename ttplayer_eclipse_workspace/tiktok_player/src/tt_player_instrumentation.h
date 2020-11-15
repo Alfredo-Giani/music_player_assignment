@@ -9,9 +9,14 @@
 #define TT_PLAYER_INSTRUMENTATION_H_
 
 #include <cmath>
+#include <string>
+#include <sstream>
+
 #include "tt_player_globaldefs.h"
 #include "tt_player_component.h"
 #include "tt_player_precision.h"
+#include "tt_player_console_manager.h"
+
 
 // just a bunch of measurements likely to be useful
 struct signal_comparison_report
@@ -58,6 +63,16 @@ public:
 		// check if the input sign is compatible with the input nominal sign
 		if (x < 0 && p_in.is_signed)
 		{
+
+			std::string message;
+			std::ostringstream osstream;
+
+			osstream << "WARNING: x should be unsigned. in " << rcpoint_name << "input is : " << x << "\n ";
+			message.append(osstream.str());
+
+			TTPlayerConsoleMessage mess(message,CONSOLE_MESSAGE::DEBUG_RC_POINTS);
+			TTPlayerConsoleManager::getInstance().processConsoleMessage(mess);
+
 			printf
 			(
 					"WARNING: x should be unsigned. in %s \n "
@@ -81,35 +96,32 @@ public:
 		{
 			float x_lsb_truncated = floor(x_cond * static_cast<float>(1 >> p_out.fract));
 
-			printf
-			(
-					"WARNING: LSB truncation error in  %s \n "
-					"\n"
-					"fixed point input is				: %f \n"
-					"lsb truncated is					: %f \n"
-					, rcpoint_name
-					, x_fixed
-					, x_lsb_truncated
-			);
+			std::string message;
+			std::ostringstream osstream;
+
+			osstream << "WARNING: LSB truncation error in " << rcpoint_name << "fixed input is : " << x_fixed << "LSB truncated is : " << x_lsb_truncated << "\n ";
+			message.append(osstream.str());
+
+			TTPlayerConsoleMessage mess(message,CONSOLE_MESSAGE::DEBUG_RC_POINTS);
+			TTPlayerConsoleManager::getInstance().processConsoleMessage(mess);
 
 			retval = false;
 			return retval;
 		}
 
 		// check if the output integer precision drops MSBs
-		float max_out = pow(2.0,p_out.integ) -1;
+		float max_out = pow(2.0,p_out.integ) - pow(2.0,-p_out.fract);
 		if ( x_fixed > max_out )
 		{
-			printf
-			(
-					"WARNING: MSB truncation error in  %s \n "
-					"\n"
-					"fixed point input is				: %f \n"
-					"max fixed point output is			: %f \n"
-					, rcpoint_name
-					, x_fixed
-					, max_out
-			);
+
+			std::string message;
+			std::ostringstream osstream;
+
+			osstream << "WARNING: MSB truncation error in " << rcpoint_name << "fixed input is : " << x_fixed << "LSB truncated is : " << max_out << "\n ";
+			message.append(osstream.str());
+
+			TTPlayerConsoleMessage mess(message,CONSOLE_MESSAGE::DEBUG_RC_POINTS);
+			TTPlayerConsoleManager::getInstance().processConsoleMessage(mess);
 
 			retval = false;
 			return retval;

@@ -4,9 +4,10 @@
 
 #define _DEBUG_
 #ifdef _DEBUG_
-	#define _TEST_RC_P
+	#define _DEBUG_RC_P
 //	#define _TEST_SIGNAL_
 #endif
+#define _PROGRESS_CONSOLE
 
 #define RAW_BITDEPTH (16)
 

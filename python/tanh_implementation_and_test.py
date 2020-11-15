@@ -189,7 +189,7 @@ def test_inverse():
     plt.xscale('log')
 
 #------------------------------------------------------------------------------
-def test_tanh():
+def test_tanh(gain):
     
     #generate a fixed point ramp [-1,1). fractional precision 15 bit        
     x_in = np.arange( 0, pow(2.0, 16) -1, 64 )
@@ -199,7 +199,7 @@ def test_tanh():
     x_in_s = x_in - pow(2.0,15)
     
     
-    gain = 1.0
+    
     # calculate gain in fixed precision
     gain_fp = np.floor(gain *pow(2.0, 4)) / pow(2.0, 4)
     
@@ -224,7 +224,7 @@ def test_tanh():
     plt.plot( x_in_s/pow(2.0,15), np.abs(y_norm - y_approx))
     plt.show()
     
-    return y, y_unsign, debug_data
+    return y, y_unsign, y_norm, debug_data
     
     
 
@@ -238,11 +238,44 @@ plt.figure('reference')
 plt.plot(x, y_ideal, '-b')
 plt.plot(x, y_approx, '-r')
 
-#test_inverse()
-[y, y_unsigned, debug_data] = test_tanh()
+gain = 1.0
+[y, y_unsigned, y_norm, debug_data] = test_tanh(gain)
 
+   
+def plot_fun(ddata):       
+    
+    plt.figure('data')
+    plt.clf()
+    
+    x_norm = ddata[1:,2]
+    
+    y_ideal = np.floor(np.tanh(gain*x_norm)*pow(2.0, 16))/pow(2.0, 16)
+    x_gain = x_norm*gain
+    y_rational = np.floor(x_gain*(27 + pow(x_gain,2.0))/(27  + 9*pow(x_gain, 2.0))*pow(2.0, 16))/pow(2.0, 16)
+    y_norm = ddata[1:,3]
+    
+    plt.plot(x_norm, y_ideal, '-b')
+    plt.plot(x_norm, y_rational, '-r')
+    plt.plot(x_norm, y_norm, '-g')
 
+gain = 1.0
 
+filename = '../ttplayer_eclipse_workspace/tiktok_player/tt_player_test_tanh_log.csv'
+    
+# TODO need to find a nicer way...
+from numpy import genfromtxt
 
+init_data = genfromtxt(filename, delimiter=',')
+plot_fun(init_data)
+
+"""
+while(True):
+    new_data = genfromtxt(filename, delimiter=',')
+    
+    if (new_data != init_data).any():
+        init_data = new_data
+        plot_fun(init_data)
+"""     
+        
 
 

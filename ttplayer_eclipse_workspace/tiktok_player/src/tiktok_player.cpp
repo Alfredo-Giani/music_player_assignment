@@ -11,6 +11,7 @@
 #include "tt_player_globaldefs.h"
 #include "tt_player_precision.h"
 #include "tt_player_processor.h"
+#include "tt_player_console_manager.h"
 #include <math.h>
 #include <stdio.h>
 #include <string>
@@ -18,9 +19,9 @@
 
 using namespace std;
 
-bool test_inverse_lut() // ported from python
+int test_inverse_lut() // ported from python
 {
-	bool retval = true;
+	int retval = 1;
 
 	std::ofstream fstream( "tt_player_test_inverse_lut_log.csv", std::ofstream::out | std::ofstream::trunc );
 
@@ -50,7 +51,6 @@ bool test_inverse_lut() // ported from python
 
 
 		// calculate the renormalised lut output
-		//TTP_U64 y = TTPlayerPrecision::ttp_lut_inverse(x_in);
 		TTP_U64 y_out = TTPlayerPrecision::ttp_lut_inverse(x_in);
 
 		// renormalise
@@ -77,23 +77,26 @@ bool test_inverse_lut() // ported from python
 
 		message.append(osstream.str());
 
-		std::cout << osstream.str();
+		TTPlayerConsoleMessage mess(message,CONSOLE_MESSAGE::PROGRESS_STATUS);
+		TTPlayerConsoleManager::getInstance().processConsoleMessage(mess);
 
-		csv_osstream << x_in << "," << y_out<< "," << x_norm << "," << y_norm << "," << y_ideal << "\n";
+		//std::cout << osstream.str();
+
+		csv_osstream << x_in << "," << y_out << "," << x_norm << "," << y_norm << "," << y_ideal << "\n";
 	}
 
 	fstream << csv_osstream.str();
 	fstream.close();
-	retval = true;
+	retval = 1;
 
 	return retval;
 }
 
 
-bool test_tanh() // ported from python
+int test_tanh() // ported from python
 {
 
-	bool retval = true;
+	int retval = 1;
 
 	std::ofstream fstream("tt_player_test_tanh_log.csv");
 
@@ -138,14 +141,28 @@ bool test_tanh() // ported from python
 
 		float y_ideal = x_norm*(27 + pow(x_norm,2.0))/(27  + 9*pow(x_norm, 2.0));
 
+		float error = abs(y_norm - y_ideal);
+
+		float bitloss = error > 0 ? log2(error) : 0;
+
 		std::string message;
 		std::ostringstream osstream;
 
-		osstream << "x_in = " << x_in << " y_out = " << y_out << " x_norm = " << x_norm << " y_norm = " << y_norm << " y_ideal = " << y_ideal << "\n";
+		osstream
+			<< " x_in = " << x_in
+			<< " y_out = " << y_out
+			<< " x_norm = " << x_norm
+			<< " y_norm = " << y_norm
+			<< " y_ideal = " << y_ideal
+			<< " bitloss = " << bitloss
+			<< "\n";
 
 		message.append(osstream.str());
 
-		std::cout << osstream.str();
+		TTPlayerConsoleMessage mess(message,CONSOLE_MESSAGE::PROGRESS_STATUS);
+		TTPlayerConsoleManager::getInstance().processConsoleMessage(mess);
+
+		//std::cout << osstream.str();
 
 		//std::ostringstream csv_osstream;
 		csv_osstream << x_in << "," << y_out<< "," << x_norm << "," << y_norm << "," << y_ideal << "\n";
@@ -156,7 +173,7 @@ bool test_tanh() // ported from python
 	delete tanh_clipper;
 
 	fstream.close();
-	retval = true;
+	retval = 1;
 
     return retval;
 
@@ -165,14 +182,20 @@ bool test_tanh() // ported from python
 
 int main() {
 
+
+	int retval = 1;
 	// initialise the manager, that will hold subclasses of the other components
 
 	// start the thread
 
 	//test_inverse_lut();
-	test_tanh();
+	retval = test_tanh();
 
-	cout << "done!";
+	if (retval == 1)
+		cout << "done!";
+	else
+		cout << "ops...";
 
-	return 1;
+
+	return retval;
 }

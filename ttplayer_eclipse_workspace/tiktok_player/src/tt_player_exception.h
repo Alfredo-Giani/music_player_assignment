@@ -30,4 +30,12 @@ public:
 	virtual char const * what() const noexcept { return "Processor memory allocation exception"; }
 };
 
+class TTPlayerDivisionByZeroException : public TTPlayerException
+{
+public:
+	virtual char const * what() const noexcept { return "Division by zero exception"; }
+};
+
+
+
 #endif /* TTPLAYER_EXCEPTION_H_ */
