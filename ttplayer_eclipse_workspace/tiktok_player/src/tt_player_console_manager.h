@@ -16,21 +16,49 @@
 
 enum CONSOLE_MESSAGE
 {
+	EMPTY_MESSAGE,
 	DEBUG_RC_POINTS,
 	DEBUG_SIGNALS,
 	PROGRESS_STATUS
 
 };
 
-struct TTPlayerConsoleMessage
+class TTPlayerConsoleMessage
 {
-	std::string mess;
-	CONSOLE_MESSAGE message_type; ///< just a generic thing to differenciate messages and decide what to do
 
+private:
+	std::string mess;
+	CONSOLE_MESSAGE message_type; ///< just a generic thing to differentiate messages and decide what to do
+
+public:
+
+	TTPlayerConsoleMessage()
+	{
+		mess = string();
+		message_type = EMPTY_MESSAGE;
+	}
 	TTPlayerConsoleMessage(string m, CONSOLE_MESSAGE mt)
 	{
 		mess = m;
 		message_type = mt;
+	};
+
+	void setMessage(string msg)
+	{
+		mess = msg;
+	};
+	string getMessage()
+	{
+		return mess;
+	};
+
+	void setMessageType(CONSOLE_MESSAGE mtype)
+	{
+		message_type = mtype;
+	};
+	CONSOLE_MESSAGE getMessageType()
+	{
+		return message_type;
 	};
 };
 
@@ -53,29 +81,30 @@ public:
 	TTPlayerConsoleManager(TTPlayerConsoleManager const&) = delete;
 	void operator=(TTPlayerConsoleManager const&) = delete;
 
-	void processConsoleMessage(TTPlayerConsoleMessage const message)
+	void processConsoleMessage(TTPlayerConsoleMessage message)
 	{
-
-		switch (message.message_type)
+		CONSOLE_MESSAGE type = message.getMessageType();
+		switch(type)
 		{
 		case PROGRESS_STATUS:
+
 #ifdef _PROGRESS_CONSOLE
-			std::cout << "" << message.mess << "\n";
+			std::cout << "" << message.getMessage() << "\n";
 #endif
 			break;
 
 		case DEBUG_RC_POINTS:
 #ifdef _DEBUG_RC_P
-			std::cout << "DEBUG RC: " << message.mess << "\n";
+			std::cout << "DEBUG RC: " << message.getMessage() << "\n";
 #endif
 			break;
 		case DEBUG_SIGNALS:
 #ifdef _DEBUG_
-			std::cout << "DEBUG: " << message.mess << "\n";
+			std::cout << "DEBUG: " << message.getMessage() << "\n";
 #endif
 			break;
 		default:
-			std::cout << "unknown console message, string: %s\n" << message.mess;
+			std::cout << "unknown console message, string: %s\n" << message.getMessage();
 
 		}
 	};

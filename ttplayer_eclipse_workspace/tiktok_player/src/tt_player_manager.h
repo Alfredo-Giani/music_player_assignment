@@ -34,9 +34,10 @@ public:
 
 	// overridden methods
 	void update();
+	virtual void receive(pTTPlayerMessage message);
 
 	// GUI menu operation callbacks
-	int onNewFileRequest(char* fullpathname);
+	int onNewFileRequest();
 
 	/*
 	 * GUI transport callbacks. these functions return 1 if successful, -1 if successful
@@ -66,10 +67,14 @@ public:
 	// exit callback
 	int onExit();
 
+	// operators. TODO: this unfortunately does not help when calling the generic component.
+	friend ostream& operator<<(ostream& os, const TTPlayerManager& c)
+	{
+		os << "TTPlayerManager name: " << c.getName() << " ID: " << c.getID() << "\n";
+		return os;
+	}
+
 private:
-	TTPlayerCursor* 	cursor;
-	TTPlayerStream* 	stream;
-	TTPlayerProcessor* 	processor;
 
 	TTPlayerState 	state;
 };

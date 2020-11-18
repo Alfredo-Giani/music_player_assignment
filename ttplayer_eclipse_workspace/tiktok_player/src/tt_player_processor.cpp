@@ -30,21 +30,18 @@ float TangentHSoftClipper::getCurveValue(float x)
 }
 
 // crudely ported from python...
-TTP_U16 TangentHSoftClipper::getCurveValue(TTP_U16 x, float gain)
+TTP_RAW TangentHSoftClipper::getCurveValue(TTP_RAW x_s, float gain)
 {
 
 	//TODO way too many magic numbers
 
 	TTP_U8 int_gain = floor(gain * TANH_GAIN_FRACT_MULT); // (1 << 4) gain has precision. this could
 
-	// TODO: convert to signed
 	//calculate the square and apply round and clip point
-
-	TTP_S16 x_s = static_cast<TTP_S16>(static_cast<TTP_S32>(x) - (1 << 15));
 
 	// bypass if 0.
 	if(x_s == 0)
-		return (1 << 15);
+		return (0);
 
 	// calculate the square
     TTP_U64 x_sq = x_s *x_s;
@@ -88,12 +85,13 @@ TTP_U16 TangentHSoftClipper::getCurveValue(TTP_U16 x, float gain)
     TTP_S64 y = x_s * static_cast<TTP_S64>(ratio_norm);
 
     //apply output rc
-    TTP_S16 y_rc = floor(y * pow(2.0, - LUT_OUT_FRACT)); // TODO replace with bit shift. how does bit shift behave with signed? can't remember...
+    // TODO replace with bit shift. how does bit shift behave with signed? can't remember...
+    TTP_RAW y_rc = static_cast<TTP_RAW>( floor(y * pow(2.0, - LUT_OUT_FRACT)) );
 
     // convert to unsigned
-    TTP_U16 y_u = static_cast<TTP_U16>(static_cast<TTP_S32>(y_rc) + (1 << 15));
+    //TTP_U16 y_u = static_cast<TTP_U16>(static_cast<TTP_S32>(y_rc) + (1 << 15));
 
-    return y_u;
+    return y_rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +112,7 @@ LookupTable::LookupTable()
 	pAddress[0] = 0;
 	pValue[0] = 0;
 
-	pAddress[npoints -1] = (1 << address_bitdepth) - 1;
+	pAddress[npoints -1] = address_bitdepth; // remember this is an exponent
 	pValue[npoints -1] = (1   << value_bitdepth) - 1;
 }
 
@@ -125,16 +123,17 @@ LookupTable::~LookupTable()
 }
 
 
-TTP_U16 LookupTable::getCurveValue(TTP_U16 x)
+TTP_RAW LookupTable::getCurveValue(TTP_U16 x)
 {
 
 	x = x >> (RAW_BITDEPTH - address_bitdepth); // normalise the input from the raw bit depth to the nominal LUT input bit depth
 
-	unsigned int retval = x; // bypass
+	TTP_RAW retval;
 
 	long weighted_sum = 0;
 
-	unsigned int x0, x1, y0, y1;
+	TTP_U16 x0, x1;
+	TTP_RAW y0, y1;
 
 	for (int i = 0; i < npoints - 1; i++ )
 	{
@@ -151,9 +150,10 @@ TTP_U16 LookupTable::getCurveValue(TTP_U16 x)
 			y0 = pValue[i];
 			y1 = pValue[i + 1];
 
-			weighted_sum = (x- x0)*(y1 - y0) + (y0 << pAddress[i+1]);
+			weighted_sum =
+					static_cast<TTP_RAW>(x- x0)*(y1 - y0) + (y0 << pAddress[i+1]);
 
-			retval = static_cast<unsigned int>( weighted_sum >> pAddress[i+1]);
+			retval = static_cast<TTP_RAW>( weighted_sum >> pAddress[i+1]);
 		}
 	}
 
@@ -171,7 +171,8 @@ float LookupTable::getCurveValue(float x)
 
 TTPlayerProcessor::TTPlayerProcessor() {
 
-	transferFunction = new(LookupTable);
+	//transferFunction = new(LookupTable);
+	transferFunction = new(TangentHSoftClipper);
 
 }
 

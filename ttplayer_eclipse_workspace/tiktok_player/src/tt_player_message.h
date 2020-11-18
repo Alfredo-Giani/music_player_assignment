@@ -14,6 +14,8 @@
 class TTPlayerMessage; // forward declaration
 typedef TTPlayerMessage* pTTPlayerMessage;
 
+class TTPlayerComponent; // forward declaration
+
 class TTPlayerMessage : public TTPlayerObject
 {
 public:
@@ -27,19 +29,20 @@ public:
 
 	};
 
-	TTPlayerMessage(MESSAGES message = TTP_MESSAGE_EMPTY, string brief = string(), TTPlayerObject* caller = 0);
+	TTPlayerMessage(MESSAGES message = TTP_MESSAGE_EMPTY, string brief = string(), TTPlayerComponent* caller = 0);
 
 	virtual ~TTPlayerMessage();
 	TTPlayerMessage(const TTPlayerMessage &other);
 
-	TTPlayerObject* getCaller() const {return caller;};
+	TTPlayerComponent* getCaller() const {return caller;};
+	MESSAGES getMessage(){return message;};
 
 
 private:
 
 	MESSAGES message; ///< message qualifier from an enumeration
 	string brief; ///< further comments
-	TTPlayerObject* caller; /// a pointer to the caller. not sure how this would work with deallocation conflicts...
+	TTPlayerComponent* caller; /// a pointer to the caller. not sure how this would work with deallocation conflicts...
 };
 
 

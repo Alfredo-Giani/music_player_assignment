@@ -39,18 +39,18 @@ enum CurveType
 	TANH
 };
 
-class TangentHSoftClipper : public StatelessTransferFunction
+class TangentHSoftClipper : public TTPlayerStatelessTransferFunction
 {
 public:
 	TangentHSoftClipper(){}; 														///< constructor
 
-	static TTP_U16 getCurveValue(TTP_U16 x, float gain = 1.0);  	///< return the output value for a given input - fixed point
+	static TTP_RAW getCurveValue(TTP_RAW x, float gain = 1.0);  	///< return the output value for a given input - fixed point
 	float getCurveValue(float x); 												///< return the output value for a given input - floating point
 
 };
 
 // the class storing the LUT and providing the output value for a given input x
-class LookupTable : public StatelessTransferFunction
+class LookupTable : public TTPlayerStatelessTransferFunction
 {
 public:
 	LookupTable(); 														///< constructor with default bit depth and lookup table (identity)
@@ -59,8 +59,8 @@ public:
 
 	void loadTableFromFile(const char* table_name) noexcept; 			///< load a new table. throws TTPlayerException if file not found
 
-	TTP_U16 getCurveValue(TTP_U16 x); 								///< return the output value for a given input
-	float getCurveValue(float x); 									///< return the output value for a given input
+	TTP_RAW getCurveValue(TTP_U16 x); 	///< return the output value for a given address ((NOTE: the LUT takes an unsigned address, signed pipelines need to be aligned correctly
+	float getCurveValue(float x); 		///< return the output value for a given input
 
 private:
 	int npoints; 												///< number of points (addresses) in the LUT
@@ -90,12 +90,12 @@ public:
 		return transferFunction->getCurveValue(input);
 	};
 
-	int outputRAW(int inputRAW)
+	TTP_RAW output(TTP_RAW input)
 	{
-		return transferFunction->getCurveValueRAW(inputRAW);
+		return transferFunction->getCurveValue(input);
 	};
 
-	StatelessTransferFunction* transferFunction;
+	TTPlayerStatelessTransferFunction* transferFunction;
 
 };
 

@@ -6,8 +6,9 @@
  */
 
 #include "tt_player_message.h"
+#include "tt_player_component.h"
 
-TTPlayerMessage::TTPlayerMessage(MESSAGES message, string brief, TTPlayerObject* caller)
+TTPlayerMessage::TTPlayerMessage(MESSAGES message, string brief, TTPlayerComponent* caller)
 	:message(message)
 	,brief(brief)
 	,caller(caller)

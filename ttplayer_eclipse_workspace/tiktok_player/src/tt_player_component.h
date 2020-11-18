@@ -24,7 +24,7 @@
 using namespace std;
 
 class TTPlayerComponent; // forward declaration
-typedef TTPlayerComponent* pTTPlayerComponent; // convenience type to use pointers to components
+typedef TTPlayerComponent* pTTPlayerComponent; ///< convenience type to use pointers to components
 
 class TTPlayerComponent : public TTPlayerObject ///< base component class
 {
@@ -33,16 +33,22 @@ public:
 	virtual ~TTPlayerComponent();
 	TTPlayerComponent(const TTPlayerComponent &other); ///< copy constructor
 
-	void update(pTTPlayerComponent caller);///< update function, propagated to all sub-components
+	virtual void update(pTTPlayerComponent caller);///< update function, propagated to all sub-components
 
 	virtual void receive(pTTPlayerMessage const message); ///< called by a component to send a message to this component
 	virtual void send(pTTPlayerMessage message); ///< send the message to all the sub-components
 
-	virtual void addComponent(pTTPlayerComponent compoent); ///< add a sub-component
+	virtual void addComponent(pTTPlayerComponent component); ///< add a sub-component
 	virtual void removeComponent(pTTPlayerComponent component); ///< remover a sub-component
 
+	friend ostream& operator<<(ostream& os, const TTPlayerComponent& c) //< overloaded outstream operator
+	{
+		os << "TTPlayerComponent name: " << c.getName() << " ID: " << c.getID() << "\n";
+		return os;
+	}
+
 private:
-	vector< pTTPlayerComponent > components;///< vector of sub-compoenents
+	vector< pTTPlayerComponent > components;///< vector of pointers to sub-compoenents
 
 };
 

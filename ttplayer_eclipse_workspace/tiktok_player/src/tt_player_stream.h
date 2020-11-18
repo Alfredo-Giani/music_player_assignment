@@ -10,7 +10,7 @@
 
 #include "tt_player_globaldefs.h"
 #include "tt_player_component.h"
-#include "tt_player_smartpointer.h"
+#include <memory>
 
 class TTPlayerStream final : public TTPlayerComponent
 {
@@ -20,11 +20,11 @@ public:
 
 	void loadFileStream(const char* filename) noexcept{};///< this function loads the stream and updates the wav_handler and stream parameters
 
-	TTPlayerSmartPointer getWavHandler(){return spWavHandler;};
+	shared_ptr<int> getWavHandler(){return spWavHandler;};
 	StreamParameters getStreamParameters(){return parameters;};
 
 private:
-	TTPlayerSmartPointer spWavHandler;
+	shared_ptr<int> spWavHandler;
 	StreamParameters parameters;
 };
 

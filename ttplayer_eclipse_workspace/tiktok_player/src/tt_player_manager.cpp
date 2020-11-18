@@ -7,13 +7,11 @@
 
 #include <memory>
 #include "tt_player_manager.h"
+#include "tt_player_message.h"
 using namespace std;
 
 TTPlayerManager::TTPlayerManager()
 {
-	stream 	  = new TTPlayerStream();
-	cursor 	  = new TTPlayerCursor();
-	processor = new TTPlayerProcessor();
 	state = IDLE;
 
 }
@@ -21,41 +19,39 @@ TTPlayerManager::TTPlayerManager()
 
 TTPlayerManager::~TTPlayerManager()
 {
-	delete(cursor);
-	delete(stream);
-	delete(processor);
+
 }
 
-// overridden methods
+// overload methods
 void TTPlayerManager::update()
 {
+	update(); // call the base class method, for now
 
+}
+
+void TTPlayerManager::receive(pTTPlayerMessage message)
+{
+	switch (message->getMessage())
+	{
+	case TTPlayerMessage::TTP_MESSAGE_EMPTY:
+
+		break;
+	case TTPlayerMessage::TTP_MESSAGE_PLAY:
+		break;
+
+	case TTPlayerMessage::TTP_MESSAGE_PAUSE:
+		break;
+
+	case TTPlayerMessage::TTP_MESSAGE_STOP:
+		break;
+
+	}
 }
 
 // GUI menu operation callbacks
-int TTPlayerManager::onNewFileRequest(char* fullpathname)
+int TTPlayerManager::onNewFileRequest()
 {
 	int retval = 1;
-
-	try
-	{
-		stream->loadFileStream(fullpathname);
-
-		cursor->setWavHandler(stream->getWavHandler());
-		cursor->setStreamParameters(stream->getStreamParameters());
-
-		std::shared_ptr<TTPlayerEffect> peff = std::shared_ptr<TTPlayerEffect>( new TTPlayerProcessor() );
-		cursor->addEffect(peff);
-
-	}
-	catch(TTPlayerException &ex)
-	{
-#ifdef _DEBUG_
-		cout << ex.what() << '\n';
-#endif
-		return -1;
-	}
-
 	return retval;
 }
 
@@ -63,17 +59,10 @@ int TTPlayerManager::onNewFileRequest(char* fullpathname)
 int TTPlayerManager::onPlayButtonClicked()
 {
 	int retval = 1;
-	try
-	{
-		cursor->play(1.0);
-	}
-	catch(TTPlayerException &ex)
-	{
-#ifdef _DEBUG_
-		cout << ex.what() << '\n';
-#endif
-		return -1;
-	}
+
+	pTTPlayerMessage message = new TTPlayerMessage(TTPlayerMessage::TTP_MESSAGE_PLAY, "", this);
+
+	send(message);
 
 	return retval;
 }

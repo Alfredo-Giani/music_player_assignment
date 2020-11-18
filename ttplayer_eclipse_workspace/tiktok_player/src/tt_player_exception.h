@@ -15,25 +15,25 @@ using namespace std;
 class TTPlayerException : public exception
 {
 public:
-	virtual char const * what() const noexcept { return "Generic TTPlayerException"; }
+	virtual char const * what() const noexcept { return "Generic TTPlayerException"; };
 };
 
 class TTPlayerFileNotFoundException : public TTPlayerException
 {
 public:
-	virtual char const * what() const noexcept { return "File not found exception"; }
+	virtual char const * what() const noexcept { return "File not found exception"; };
 };
 
 class TTPlayerProcessorMemoryAllocationException : public TTPlayerException
 {
 public:
-	virtual char const * what() const noexcept { return "Processor memory allocation exception"; }
+	virtual char const * what() const noexcept { return "Processor memory allocation exception"; };
 };
 
 class TTPlayerDivisionByZeroException : public TTPlayerException
 {
 public:
-	virtual char const * what() const noexcept { return "Division by zero exception"; }
+	virtual char const * what() const noexcept { return "Division by zero exception"; };
 };
 
 

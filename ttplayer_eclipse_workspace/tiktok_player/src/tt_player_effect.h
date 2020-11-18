@@ -9,19 +9,20 @@
 #define TT_PLAYER_EFFECT_H_
 
 #include "tt_player_component.h"
+#include "tt_player_precision.h"
 
 using namespace std;
 
-class StatelessTransferFunction
+class TTPlayerStatelessTransferFunction
 {
 public:
 
-	StatelessTransferFunction(){};
-	virtual ~StatelessTransferFunction(){};
-	StatelessTransferFunction(const StatelessTransferFunction &other); ///< copy constructor
+	TTPlayerStatelessTransferFunction(){};
+	virtual ~TTPlayerStatelessTransferFunction(){};
+	TTPlayerStatelessTransferFunction(const TTPlayerStatelessTransferFunction &other); ///< copy constructor
 
 	virtual float getCurveValue(float x){return x;}; ///< return the output value for a given input
-	virtual int getCurveValueRAW(int x){return x;}; ///< return the output value for a given input
+	virtual TTP_RAW getCurveValue(TTP_RAW x){return x;}; ///< return the output value for a given input
 };
 
 class TTPlayerEffect : public TTPlayerComponent
@@ -33,9 +34,9 @@ public:
 	TTPlayerEffect(const TTPlayerEffect &other);
 
 	virtual float output(float input){return input;};
-	virtual int outputRAW(int inputRAW){return inputRAW;};
+	virtual TTP_RAW outputRAW(TTP_RAW input){return input;}; // default bypass
 
-	StatelessTransferFunction* pStatelessTransferFunction;
+	TTPlayerStatelessTransferFunction* pStatelessTransferFunction;
 };
 
 typedef TTPlayerEffect* pTTPlayerEffect;

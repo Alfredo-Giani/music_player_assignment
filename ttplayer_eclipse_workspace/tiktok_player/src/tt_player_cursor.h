@@ -8,16 +8,28 @@
 #ifndef TT_PLAYER_CURSOR_H_
 #define TT_PLAYER_CURSOR_H_
 
-#include <memory>
+//#define _WINTHREADS
+#ifdef _WINTHREADS
+#include <windows.h>
+#endif
 
+#include <memory>
 #include "tt_player_component.h"
 #include "tt_player_effect.h"
-#include "tt_player_smartpointer.h"
+#include "tt_player_precision.h"
 
 enum FX_PS
 {
 	DOWNSTREAM,
 	UPSTREAM
+};
+
+enum CURSOR_STATE
+{
+	CURSOR_IDLE,
+	CURSOR_PLAY,
+	CURSOR_STOP,
+	CURSOR_PAUSE
 };
 
 class TTPlayerCursor : public TTPlayerComponent {
@@ -26,10 +38,12 @@ public:
 	virtual ~TTPlayerCursor();
 	TTPlayerCursor(const TTPlayerCursor &other);
 
-	void setWavHandler(TTPlayerSmartPointer wavhandler);
+	virtual void receive(pTTPlayerMessage message); // override
+
+	void setWavHandler(RAW_HANDLE wavhandler);
 	void setStreamParameters(const StreamParameters params);
 
-	void play(float speed = 1.0){};
+	void play(float speed = 1.0);
 	void stop();
 	void pause();
 
@@ -44,11 +58,11 @@ public:
 
 	int getCurrentPosition(); ///< current position is returned in samples
 	float getCurrentSample(); ///< the floating point value at the current position
-	int getCurrentSampleRAW(); ///< the RAW integer (fixed point) value at the current position
+	TTP_RAW getCurrentSampleRAW(); ///< the RAW integer (fixed point) value at the current position
 
-	void setCurrentPosition(int pos); ///< set the current position in samples
+	void setCurrentPosition(int pos){}; ///< set the current position in samples
 	void setCurrentSample(float val); ///< set the current value (floating point)at the current position
-	void setCurrentSampleRAW(int raw); ///< set the RAW integer (fixed point) value at the current position
+	void setCurrentSampleRAW(TTP_RAW raw); ///< set the RAW integer (fixed point) value at the current position
 
 
 	void addEffect(std::shared_ptr<TTPlayerEffect> peff, FX_PS pos = UPSTREAM)///< add a new effect in the specified position
@@ -69,11 +83,11 @@ public:
 		return currsamp;
 	};
 
-	int produceRAW(int currsamp)
+	TTP_RAW produce(TTP_RAW currsamp)
 	{
 		for (auto it = effects.begin(); it != effects.end() ; it++ )
 		{
-			currsamp = (*it)->outputRAW(currsamp);
+			currsamp = (*it)->output(currsamp);
 		}
 
 		return currsamp;
@@ -81,9 +95,18 @@ public:
 
 private:
 
+#ifdef _WINTHREADS
+	DWORD WINAPI  playThread(LPVOID lpParameter);
+#endif
+
+
 	vector<std::shared_ptr<TTPlayerEffect>> effects;
-	TTPlayerSmartPointer wavHandler;
+	RAW_HANDLE wavHandler;
 	StreamParameters streamParameters;
+
+	CURSOR_STATE state;
+
+	float playSpeed;
 
 
 };

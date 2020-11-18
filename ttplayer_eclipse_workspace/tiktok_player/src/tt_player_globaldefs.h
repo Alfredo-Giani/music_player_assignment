@@ -31,6 +31,8 @@ struct StreamParameters
 {
 	int bitPerSample;
 	float samplingFrequency;
+	float lengthInSeconds;
+	long lengthInSamples;
 };
 
 #endif /* TT_GLOBALDEFS_H_ */

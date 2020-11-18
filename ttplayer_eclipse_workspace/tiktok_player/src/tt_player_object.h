@@ -1,8 +1,10 @@
 /*
  * tt_player_object.h
  *
- *  Created on: 6 Nov 2020
- *      Author: alfre
+ *  Created on: Nov 2020
+ *  Author: alfredo Giani for TikTok
+ *
+ *
  */
 
 #ifndef TT_PLAYER_OBJECT_H_
@@ -13,7 +15,7 @@
 
 using namespace std;
 
-class TTPlayerObject
+class TTPlayerObject ///< TTPlayer base class for objects
 {
 public:
 	TTPlayerObject();
@@ -23,8 +25,8 @@ public:
 	void setID(int i){id = i;};
 	void setName(string n){name = n;};
 
-	int getID(){return id;};
-	string getName(){return name;};
+	int getID() const {return id;};
+	string getName() const {return name;};
 
 private:
 	int id;

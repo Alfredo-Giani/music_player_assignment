@@ -15,6 +15,7 @@ plt.close('all')
 
 lut_precision = 21
 lut_full = 10
+lut_fract = 16
 
 def ttp_lut_inverse( n ):
     
@@ -59,8 +60,8 @@ def ttp_lut_inverse( n ):
     lut_output = np.floor(pow(2.0 , lut_precision)/n_ishift)
         
     
-    #rescaling for range
-    lut_output_resc = np.floor(lut_output * pow(2.0 ,16 -r))
+    #rescaling for range and add fractional precision 
+    lut_output_resc = np.floor(lut_output * pow(2.0 ,lut_fract -r))
     
     return lut_output_resc
 
@@ -101,23 +102,12 @@ def ttp_tanh( x_s, gain_fp ):
     xg_rc = np.floor(xg *pow(2.0, -15 -8))
     debug_data["xg_rc"] = xg_rc    
     
-    plt.figure('xg_rc')
-    plt.plot( x_s/pow(2.0, 15), xg_rc/pow(2.0, 15))
-    plt.show()
-        
     # calculate (27 + xg)
     numerator = 27*pow(2.0,15) + xg_rc
     debug_data["numerator"] = numerator    
-    
-    plt.figure('numerator')
-    plt.plot( x_s/pow(2.0, 15), numerator/pow(2.0, 15))
-    plt.show()
-    
+      
     #calculate denominator (n in the doc)
     denominator = numerator + xg_rc * pow(2.0 , 3)
-    plt.figure('denominator')
-    plt.plot( x_s/pow(2.0, 15), denominator/pow(2.0, 15))
-    plt.show()
     debug_data["denominator"] = denominator    
     
     # calculate the inverse m
@@ -128,17 +118,9 @@ def ttp_tanh( x_s, gain_fp ):
     ratio = lut_inverse*numerator
     debug_data["ratio"] = ratio    
     
-    plt.figure('ratio')
-    plt.plot( x_s/pow(2.0, 15), ratio)
-    plt.show()
-        
     # renormalise for lut precision rc point
     ratio_norm = np.floor(ratio * pow(2.0, - lut_precision));
     debug_data["ratio_norm"] = ratio_norm
-    
-    plt.figure('ratio norm')
-    plt.plot( x_s/pow(2.0, 15), ratio_norm/pow(2.0, 16))
-    plt.show()
     
     #multiply by x    
     y = x_s * ratio_norm
@@ -156,28 +138,34 @@ def ttp_tanh( x_s, gain_fp ):
 #------------------------------------------------------------------------------
 def test_inverse():
     
+    
+    plt.close('all')
     #generate a unsigned range
     x_in = np.arange( 1, pow(2.0, 16) -1, 16 )
     
     # fixed point. x = 256 => x_norm = 1.0 , x =1 => x_norm = 1.0/256.0    
-    x_norm = x_in/pow(2.0,8) 
+    x_norm = x_in*pow(2.0,-lut_full) 
     
     
     # fixed point     
     y = ttp_lut_inverse(x_in) * pow(2.0, -lut_precision)# + 16) uncomment for integ representation 
-    y_approx = y * pow(2.0,8) # so that ttp_lut_inverse(1) = 1/(1/256) = 256 and ttp_lut_inverse(256) = 1, ttp_lut_inverse(512) = 2 etc
+    y_approx = y * pow(2.0,lut_full - lut_fract) # so that ttp_lut_inverse(1) = 1/(1/256) = 256 and ttp_lut_inverse(256) = 1, ttp_lut_inverse(512) = 2 etc
         
     y_ideal = 1/x_norm 
     
-    plt.figure('inverse')
-    plt.plot( x_norm, y_ideal,'-b') 
-    plt.plot( x_norm, y_approx,':r')
+      
+    plt.figure('comparison of reciprocal function and fixed point implementation')
+    plt.plot( x_norm, y_ideal,'-b', label = 'floating point reciprocal (ideal)') 
+    plt.plot( x_norm, y_approx,':r', label = 'fixed point implementation')
     plt.xscale('log')
     plt.yscale('log')
+    plt.legend()
     plt.show()
     
-    plt.figure('diff (log2)')
-    plt.plot( x_norm, np.log2( pow(2.0,16) * np.abs(y_approx - y_ideal)),'-b') 
+    
+    plt.figure('error (log2)')
+    plt.plot( x_norm, np.log2(np.abs(y_approx - y_ideal)),'-b') 
+    plt.legend()
     plt.xscale('log')
     
     plt.figure('diff (float)')
@@ -187,6 +175,7 @@ def test_inverse():
     plt.figure('diff (relative)')
     plt.plot( x_norm, np.abs(y_approx - y_ideal)/y_ideal,'-b') 
     plt.xscale('log')
+    
 
 #------------------------------------------------------------------------------
 def test_tanh(gain):
@@ -213,7 +202,7 @@ def test_tanh(gain):
     x_in_s_norm = x_in_s/pow(2,15)
     y_approx = x_in_s_norm*(27 + pow(x_in_s_norm,2.0))/(27  + 9*pow(x_in_s_norm, 2.0))    
     
-    
+    """    
     plt.figure('y')
     plt.plot( x_in_s/pow(2.0,15), y_approx, 'b')
     plt.plot( x_in_s/pow(2.0,15), y_norm, ':r')
@@ -223,7 +212,7 @@ def test_tanh(gain):
     plt.figure('abs diff')
     plt.plot( x_in_s/pow(2.0,15), np.abs(y_norm - y_approx))
     plt.show()
-    
+    """
     return y, y_unsign, y_norm, debug_data
     
     
@@ -234,29 +223,41 @@ x = np.arange(-1.0, 1.0, 0.0001)
 
 y_ideal = np.tanh(x)
 y_approx = x*(27 + pow(x,2.0))/(27  + 9*pow(x, 2.0))
-plt.figure('reference')
-plt.plot(x, y_ideal, '-b')
-plt.plot(x, y_approx, '-r')
 
 gain = 1.0
 [y, y_unsigned, y_norm, debug_data] = test_tanh(gain)
 
    
 def plot_fun(ddata):       
-    
-    plt.figure('data')
-    plt.clf()
-    
-    x_norm = ddata[1:,2]
-    
-    y_ideal = np.floor(np.tanh(gain*x_norm)*pow(2.0, 16))/pow(2.0, 16)
+       
+    x_norm = ddata[:,2]
+    y_norm = ddata[:,3]
+        
     x_gain = x_norm*gain
-    y_rational = np.floor(x_gain*(27 + pow(x_gain,2.0))/(27  + 9*pow(x_gain, 2.0))*pow(2.0, 16))/pow(2.0, 16)
-    y_norm = ddata[1:,3]
+    y_rational = (x_gain*(27 + pow(x_gain,2.0))/(27  + 9*pow(x_gain, 2.0))*pow(2.0, 16))/pow(2.0, 16)
     
-    plt.plot(x_norm, y_ideal, '-b')
-    plt.plot(x_norm, y_rational, '-r')
-    plt.plot(x_norm, y_norm, '-g')
+    plt.figure('comparison of rational tanh and fixed point implementation')
+    plt.clf()        
+    plt.plot(x_norm, y_rational, '-r', label = 'floating point (ideal)')
+    plt.plot(x_norm, y_norm, '-g', label = 'fixed point implementation')
+    plt.legend()
+
+    plt.figure('comparison of rational tanh and fixed point implementation  (LOG)')
+    plt.clf()        
+    plt.plot(x_norm, y_rational, '-r', label = 'floating point (ideal)')
+    plt.plot(x_norm, y_norm, '-g', label = 'fixed point implementation')
+    plt.legend()
+
+
+    error_abs = abs(y_norm - y_rational);
+    
+    err_log2 = np.log2(error_abs)
+
+
+    plt.figure('absolute error (log2)')
+    plt.clf()    
+    plt.plot(x_norm, err_log2, '-b', label = 'log2 of abs error')    
+    plt.legend()
 
 gain = 1.0
 
@@ -266,16 +267,10 @@ filename = '../ttplayer_eclipse_workspace/tiktok_player/tt_player_test_tanh_log.
 from numpy import genfromtxt
 
 init_data = genfromtxt(filename, delimiter=',')
+init_data = init_data[1:,:] # remove first row, which is a NaN rendering of text! don't really like this... 
 plot_fun(init_data)
 
-"""
-while(True):
-    new_data = genfromtxt(filename, delimiter=',')
-    
-    if (new_data != init_data).any():
-        init_data = new_data
-        plot_fun(init_data)
-"""     
+
         
 
 

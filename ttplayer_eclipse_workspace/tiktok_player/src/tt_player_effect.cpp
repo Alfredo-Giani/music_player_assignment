@@ -10,7 +10,7 @@
 
 TTPlayerEffect::TTPlayerEffect()
 {
-	pStatelessTransferFunction = new StatelessTransferFunction();
+	pStatelessTransferFunction = new TTPlayerStatelessTransferFunction();
 	// TODO Auto-generated constructor stub
 
 }
@@ -22,7 +22,7 @@ TTPlayerEffect::~TTPlayerEffect() {
 
 TTPlayerEffect::TTPlayerEffect(const TTPlayerEffect &other) {
 
-	pStatelessTransferFunction = new StatelessTransferFunction(); //(&(other.pStatelessTransferFunction));
+	pStatelessTransferFunction = new TTPlayerStatelessTransferFunction(); //(&(other.pStatelessTransferFunction));
 
 }
 
